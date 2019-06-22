@@ -1,0 +1,10 @@
+<RCC>
+  <qresource prefix="icons">
+    <file>monitoring16x16.ico</file>
+    <file>monitoring32x32.ico</file>
+    <file>monitoring48x48.ico</file>
+    <file>monitoring64x64.ico</file>
+    <file>monitoring96x96.ico</file>
+    <file>monitoring128x128.ico</file>
+  </qresource>
+</RCC>
