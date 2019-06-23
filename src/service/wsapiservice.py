@@ -25,6 +25,7 @@ class WSApi(FolderABS):
     listFolder(path)
         Lists all folders and files of a given path.
     """
+
     def __init__(self, interplay: str, product: str, apiusr: str, apipwd: str) -> None:
         """
         Parameters
@@ -129,12 +130,10 @@ class WSApi(FolderABS):
             API json response.
         """
         self.setWatchFolderUrl(path)
-        self.client_response = self.client.service.GetChildren(
-            **self.endpoint, _soapheaders=[self.header_auth])["Results"]
-        return self.client_response
-        # return self.client.service.GetChildren(
-        #     **self.endpoint, _soapheaders=[self.header_auth]
-        # )["Results"]
+        client_response = self.client.service.GetChildren(
+            **self.endpoint, _soapheaders=[self.header_auth]
+        )["Results"]
+        return client_response
 
     def listFolder(self, path: str) -> Tuple[list, list]:
         """Lists all folders and files of a given path.

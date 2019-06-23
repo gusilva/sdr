@@ -2,6 +2,7 @@ from src.service.folderabs import FolderABS
 from typing import Tuple
 from os import listdir, path, sep
 
+
 class FolderLister(FolderABS):
     """
     A class to list folders from filesystem.
@@ -11,6 +12,7 @@ class FolderLister(FolderABS):
     listFolder(rootfolder)
         Retrieve folder files and directories.
     """
+
     def listFolder(self, rootfolder) -> Tuple[list, list]:
         """
         List folders from a given os path.
@@ -32,8 +34,8 @@ class FolderLister(FolderABS):
         folders = []
         files = []
         for it in f:
-            if path.isdir(f'{rootfolder}{sep}{it}'):
-                folders.append(f'{rootfolder}{sep}{it}')
+            if path.isdir(f"{rootfolder}{sep}{it}"):
+                folders.append(f"{rootfolder}{sep}{it}")
             else:
-                files.append(f'{rootfolder}{sep}{it}')
+                files.append(f"{rootfolder}{sep}{it}")
         return folders, files

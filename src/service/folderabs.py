@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Tuple
 
+
 class FolderABS(ABC):
     """
     Abstract class to list folders.

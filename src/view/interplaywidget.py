@@ -1,5 +1,4 @@
-
-from PyQt5.QtWidgets import QTreeView
+from PyQt5.QtWidgets import QTreeView, QWidget
 from PyQt5.QtGui import QStandardItemModel, QStandardItem
 from PyQt5.QtCore import QThread, pyqtSignal
 from src.service.wsapiservice import WSApi
@@ -8,15 +7,46 @@ from src.service.threadservice import WorkerThread
 from anytree import Node
 from collections import deque
 
-class InterplayModel(QStandardItemModel):
-    def __init__(self, parent=None):
-        InterplayModel.__init__(self, parent)
-        self.setHorizontalHeaderLabels(["Folders", "Count"])
 
 class InterplayWidget(QTreeView):
+    """
+    Interplay widget for the ui.
+
+    Attributes
+    ----------
+    threadsignal : pyqtSignal
+        signal for when the worker has returned the data.
+
+    Methods
+    -------
+    setInterplayModel()
+        create and set the model data.
+
+    update(pam_source: str, watch_folder: str, username: str, password: str, wsl_pam: str)
+        dispatch the threads to get data for the tree widget.
+
+    onFinished()
+        Enable the tree widget and emit the finish signal.
+
+    onWorkerSignal(datamodel: list)
+        retrieve the data when worker has finished.
+
+    setTreeItems(data: list)
+        set the tree widget data.
+    """
+
     threadsignal = pyqtSignal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: QWidget = None) -> None:
+        """
+        Inherit QTreeView constructor and configure the widget.
+
+        Parameters
+        ----------
+        parent : QWidget
+            parent widget object
+
+        """
         super(InterplayWidget, self).__init__(parent)
         self.setInterplayModel()
         self.setHeaderHidden(False)
@@ -24,19 +54,51 @@ class InterplayWidget(QTreeView):
         self.header().setDefaultSectionSize(150)
         self.threadfinished = False
 
-    def setInterplayModel(self):
+    def setInterplayModel(self) -> None:
+        """
+        Create and configure the model data to be used in treewidget.
+
+        """
         self.model = QStandardItemModel()
         self.model.setHorizontalHeaderLabels(["Folders", "Count"])
         self.setModel(self.model)
-        self.setCurrentIndex(self.model.index(0,0))
+        self.setCurrentIndex(self.model.index(0, 0))
 
-    def update(self, pam_source, watch_folder, username, password, wsl_pam_source):
+    def update(
+        self,
+        pam_source: str,
+        watch_folder: str,
+        username: str,
+        password: str,
+        wsl_pam: str,
+    ) -> None:
+        """
+        Dispatch the threads to get data for the tree widget.
+
+        Parameters
+        ----------
+        pam_source : str
+            production asset management source.
+
+        watch_folder : str
+            watch folder path.
+
+        username : str
+            username to access pam resources.
+
+        password : str
+            password for the username.
+
+        wsl_pam : str
+            url for webservice description language server.
+
+        """
         self.setEnabled(False)
         wsapi = WSApi(pam_source, watch_folder, username, password)
-        wsapi.setClient(wsl_pam_source)
+        wsapi.setClient(wsl_pam)
         walker = StructWalker(wsapi)
         walker.tree = Node(watch_folder, leaves=0)
-        self.model.removeRows( 0, self.model.rowCount() )
+        self.model.removeRows(0, self.model.rowCount())
 
         walker.counter = []
         walker.tree = Node(pam_source, leaves=0)
@@ -50,19 +112,40 @@ class InterplayWidget(QTreeView):
         self.worker.moveToThread(self.thread)
         self.thread.start()
 
-    def onFinished(self):
-        print("thread finished")
+    def onFinished(self) -> None:
+        """
+        Enable the tree widget and emit the finish signal.
+
+        """
         self.threadfinished = True
         self.setEnabled(True)
         self.threadsignal.emit("finished")
 
-    def onWorkerSignal(self, text, datamodel):
+    def onWorkerSignal(self, datamodel: list) -> None:
+        """
+        Retrieve the data when worker has finished.
+
+        Parameters
+        ----------
+        datamodel : list
+            model data with all nodes.
+
+        """
         self.threadfinished = False
         self.setTreeItems(datamodel)
         self.setEnabled(True)
         self.thread.terminate()
 
-    def setTreeItems(self, data):
+    def setTreeItems(self, data: list) -> None:
+        """
+        Set the tree widget data.
+
+        Parameters
+        ----------
+        data : list
+            model data with all nodes.
+
+        """
         seen = {}
         values = deque(data)
         while values:
@@ -80,4 +163,3 @@ class InterplayWidget(QTreeView):
                 [QStandardItem(value["name"]), QStandardItem(str(value["leaves"]))]
             )
             seen[dbid] = parent.child(parent.rowCount() - 1)
-        

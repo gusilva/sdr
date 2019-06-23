@@ -28,13 +28,16 @@ def createfolders(tmpdir_factory):
 
     return folder
 
+
 @pytest.fixture(scope="function")
 def fnlister():
     return FolderLister()
 
+
 @pytest.fixture(scope="function")
 def walker(fnlister):
     return StructWalker(fnlister)
+
 
 def test_init_tree(walker):
     assert isinstance(walker.tree, Node)
@@ -43,14 +46,24 @@ def test_init_tree(walker):
     assert walker.tree.__dict__["leaves"] == 0
     assert walker.counter == []
 
+
 def test_transverse_struct(walker, createfolders):
     walker.transverse(createfolders.strpath, walker.tree)
     assert 5 == walker.tree.__dict__["leaves"]
 
+
 def test_fix(walker, createfolders):
     walker.transverse(createfolders.strpath, walker.tree)
     fixed = walker.fix(walker.tree)
-    folders = ['', '', '\\folder1', '\\folder2', '\\folder3', '\\folder4', '\\folder4\\subfolder4']
-    for node,count,folder in zip(RenderTree(fixed), [5,5,1,1,0,2,2], folders):
+    folders = [
+        "",
+        "",
+        "\\folder1",
+        "\\folder2",
+        "\\folder3",
+        "\\folder4",
+        "\\folder4\\subfolder4",
+    ]
+    for node, count, folder in zip(RenderTree(fixed), [5, 5, 1, 1, 0, 2, 2], folders):
         assert node.node.__dict__["leaves"] == count
-        assert node.node.name.replace(createfolders.strpath, '') == folder
+        assert node.node.name.replace(createfolders.strpath, "") == folder
