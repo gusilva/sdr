@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.2" />
+<title>sdr.src.view.syncwidget API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>sdr.src.view.syncwidget</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">from PyQt5.QtWidgets import (
+    QWidget,
+    QTabWidget,
+    QVBoxLayout,
+    QPushButton,
+    QGridLayout,
+    QGroupBox,
+    QLabel,
+    QLineEdit,
+    QLabel,
+    QSpacerItem,
+    QSizePolicy,
+)
+from PyQt5.QtCore import QSettings, QCoreApplication, Qt, QMetaObject
+from collections import deque
+from src.service.structwalker import StructWalker
+from src.service.wsapiservice import WSApi
+from src.service.exceptions import WSApiException
+from src.view.interplaywidget import InterplayWidget
+
+
+class SyncWidget(QWidget):
+    &#34;&#34;&#34;
+    Sync ui with the interplay tree widgets.
+
+    Methods
+    -------
+    setConfigs()
+        set the settings tab with saved data.
+
+    status(msg_text: str)
+        set the statusbar text.
+
+    saveConfig()
+        save configs from settings tab.
+
+    addAssetTab()
+        add tab widget with the interplaytree widgets.
+
+    addSettingTab()
+        add settings tab widget.
+
+    retranslateUi()
+        translate method for the texts.
+
+    update()
+        update the interplaytree when the update button is pressed.
+
+    onFinished()
+        enable the update button.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent: QWidget) -&gt; None:
+        &#34;&#34;&#34;
+        Inherit QWidget constructor and configure the widget.
+
+        Parameters
+        ----------
+        parent : QWidget
+            parent widget object
+
+        &#34;&#34;&#34;
+        super(SyncWidget, self).__init__(parent)
+        self.theadcount = 0
+        self.parent = parent
+
+        self.config = QSettings(&#34;application&#34;, &#34;mainapp&#34;)
+        self.config.sync()
+        self.setObjectName(&#34;Form&#34;)
+        self.resize(720, 647)
+
+        self.tabWidget = QTabWidget(self)
+        self.tabWidget.setCurrentIndex(0)
+
+        self.assetTab = QWidget()
+        self.addAssetTab()
+
+        self.settingsTab = QWidget()
+        self.addSettingTab()
+
+        verticalLayout = QVBoxLayout(self)
+        verticalLayout.addWidget(self.tabWidget)
+
+        self.retranslateUi()
+
+        QMetaObject.connectSlotsByName(self)
+        self.setConfigs()
+
+    def setConfigs(self) -&gt; None:
+        &#34;&#34;&#34;
+        Set the settings tab with saved data.
+
+        &#34;&#34;&#34;
+        default = {
+            &#34;pamSource&#34;: &#34;&#34;,
+            &#34;pamDestination&#34;: &#34;&#34;,
+            &#34;watchFolder&#34;: &#34;&#34;,
+            &#34;username&#34;: &#34;&#34;,
+            &#34;password&#34;: &#34;&#34;,
+            &#34;wslInterplay&#34;: &#34;&#34;,
+            &#34;wslSdr&#34;: &#34;&#34;,
+        }
+        self.pamSourceLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;pamSource&#34;]
+        )
+        self.pamDestinationLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;pamDestination&#34;]
+        )
+        self.watchFolderLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;watchFolder&#34;]
+        )
+        self.wslPamSourceLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;wslInterplay&#34;]
+        )
+        self.wslSdrLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;wslSdr&#34;])
+        self.usernameLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;username&#34;])
+        self.passwordLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;password&#34;])
+
+    def status(self, msg_text: str) -&gt; None:
+        &#34;&#34;&#34;Set the statusbar text.
+
+        Parameters
+        ----------
+        msg_text : str
+            message to be shown in statusbar.
+
+        &#34;&#34;&#34;
+        self.parent.statusBar().showMessage(msg_text, 2000)
+
+    def saveConfig(self) -&gt; None:
+        &#34;&#34;&#34;
+        Save configs from settings tab.
+
+        &#34;&#34;&#34;
+        self.settings = {
+            &#34;pamSource&#34;: self.pamSourceLineEdit.text(),
+            &#34;pamDestination&#34;: self.pamDestinationLineEdit.text(),
+            &#34;watchFolder&#34;: self.watchFolderLineEdit.text(),
+            &#34;wslInterplay&#34;: self.wslPamSourceLineEdit.text(),
+            &#34;wslSdr&#34;: self.wslSdrLineEdit.text(),
+            &#34;username&#34;: self.usernameLineEdit.text(),
+            &#34;password&#34;: self.passwordLineEdit.text(),
+        }
+        self.config.setValue(&#34;mainapp&#34;, self.settings)
+        self.config.sync()
+        self.status(&#34;Settings have been saved.&#34;)
+
+    def addAssetTab(self) -&gt; None:
+        &#34;&#34;&#34;
+        Add tab widget with the interplaytree widgets.
+
+        &#34;&#34;&#34;
+        self.interplayTreeView = InterplayWidget(self.assetTab)
+        self.sdrTreeView = InterplayWidget(self.assetTab)
+
+        self.updateBtn = QPushButton(self.assetTab)
+        self.updateBtn.clicked.connect(self.update)
+
+        gridLayout = QGridLayout(self.assetTab)
+        gridLayout.addWidget(self.interplayTreeView, 0, 0, 1, 1)
+        gridLayout.addWidget(self.sdrTreeView, 0, 1, 1, 1)
+        gridLayout.addWidget(self.updateBtn, 1, 0, 1, 2)
+
+        self.tabWidget.addTab(self.assetTab, &#34;&#34;)
+
+    def addSettingTab(self) -&gt; None:
+        &#34;&#34;&#34;
+        Add settings tab widget.
+
+        &#34;&#34;&#34;
+        self.interplayGBox = QGroupBox(self.settingsTab)
+        self.pamSourceLbl = QLabel(self.interplayGBox)
+        self.pamSourceLineEdit = QLineEdit(self.interplayGBox)
+        self.pamSourceLineEdit.setText(&#34;&#34;)
+        self.pamDestinationLbl = QLabel(self.interplayGBox)
+        self.pamDestinationLineEdit = QLineEdit(self.interplayGBox)
+        self.watchFolderLbl = QLabel(self.interplayGBox)
+        self.watchFolderLineEdit = QLineEdit(self.interplayGBox)
+
+        interplayGLyt = QGridLayout(self.interplayGBox)
+        interplayGLyt.addWidget(self.pamSourceLbl, 0, 0, 1, 1)
+        interplayGLyt.addWidget(self.pamSourceLineEdit, 0, 1, 1, 1)
+        interplayGLyt.addWidget(self.pamDestinationLbl, 1, 0, 1, 1)
+        interplayGLyt.addWidget(self.pamDestinationLineEdit, 1, 1, 1, 1)
+        interplayGLyt.addWidget(self.watchFolderLbl, 2, 0, 1, 1)
+        interplayGLyt.addWidget(self.watchFolderLineEdit, 2, 1, 1, 1)
+
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.wsGBox = QGroupBox(self.settingsTab)
+        self.wslpamSourceLbl = QLabel(self.wsGBox)
+        self.usernameLbl = QLabel(self.wsGBox)
+        self.usernameLineEdit = QLineEdit(self.wsGBox)
+        self.passwordLineEdit = QLineEdit(self.wsGBox)
+        self.passwordLineEdit.setEchoMode(QLineEdit.Password)
+        self.wslPamSourceLineEdit = QLineEdit(self.wsGBox)
+        self.wslPamSourceLineEdit.setText(&#34;&#34;)
+        self.passwordLbl = QLabel(self.wsGBox)
+        self.wslSdrLineEdit = QLineEdit(self.wsGBox)
+        self.wslSdrLbl = QLabel(self.wsGBox)
+        self.saveBtn = QPushButton(self.settingsTab)
+        self.saveBtn.clicked.connect(self.saveConfig)
+
+        wsGLyt = QGridLayout(self.wsGBox)
+        wsGLyt.addWidget(self.wslpamSourceLbl, 0, 0, 1, 1)
+        wsGLyt.addWidget(self.usernameLbl, 2, 0, 1, 1)
+        wsGLyt.addWidget(self.usernameLineEdit, 2, 1, 1, 1)
+        wsGLyt.addWidget(self.passwordLineEdit, 3, 1, 1, 1)
+        wsGLyt.addWidget(self.wslPamSourceLineEdit, 0, 1, 1, 1)
+        wsGLyt.addWidget(self.passwordLbl, 3, 0, 1, 1)
+        wsGLyt.addWidget(self.wslSdrLineEdit, 1, 1, 1, 1)
+        wsGLyt.addWidget(self.wslSdrLbl, 1, 0, 1, 1)
+
+        verticalLayout = QVBoxLayout(self.settingsTab)
+        verticalLayout.addWidget(self.interplayGBox)
+        verticalLayout.addItem(spacerItem)
+        verticalLayout.addWidget(self.wsGBox)
+        verticalLayout.addWidget(self.saveBtn)
+
+        self.tabWidget.addTab(self.settingsTab, &#34;&#34;)
+
+    def retranslateUi(self) -&gt; None:
+        &#34;&#34;&#34;
+        Translate method for the texts.
+
+        &#34;&#34;&#34;
+        _translate = QCoreApplication.translate
+        self.setWindowTitle(_translate(&#34;SDR MONITOR&#34;, &#34;SDR MONITOR&#34;))
+
+        self.updateBtn.setText(_translate(&#34;Form&#34;, &#34;Update&#34;))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.assetTab), _translate(&#34;Form&#34;, &#34;Assets&#34;)
+        )
+        self.interplayGBox.setTitle(_translate(&#34;Form&#34;, &#34;INTERPLAY&#34;))
+        self.pamSourceLbl.setText(_translate(&#34;Form&#34;, &#34;PAM SOURCE&#34;))
+        self.pamDestinationLbl.setText(_translate(&#34;Form&#34;, &#34;PAM DESTINATION&#34;))
+        self.watchFolderLbl.setText(_translate(&#34;Form&#34;, &#34;WATCHFOLDER&#34;))
+        self.wsGBox.setTitle(_translate(&#34;Form&#34;, &#34;WEBSERVICE&#34;))
+        self.wslpamSourceLbl.setText(_translate(&#34;Form&#34;, &#34;WSL INTERPLAY&#34;))
+        self.usernameLbl.setText(_translate(&#34;Form&#34;, &#34;USERNAME&#34;))
+        self.passwordLbl.setText(_translate(&#34;Form&#34;, &#34;PASSWORD&#34;))
+        self.wslSdrLbl.setText(_translate(&#34;Form&#34;, &#34;WSL SDR&#34;))
+        self.saveBtn.setText(_translate(&#34;Form&#34;, &#34;Save&#34;))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.settingsTab), _translate(&#34;Form&#34;, &#34;Settings&#34;)
+        )
+
+    def update(self) -&gt; None:
+        &#34;&#34;&#34;
+        Update the interplaytree when the update button is pressed.
+
+        &#34;&#34;&#34;
+        try:
+            self.updateBtn.setEnabled(False)
+
+            pam_source = self.pamSourceLineEdit.text()
+            pam_destination = self.pamDestinationLineEdit.text()
+            watch_folder = self.watchFolderLineEdit.text()
+            username = self.usernameLineEdit.text()
+            password = self.passwordLineEdit.text()
+            wsl_pam_source = self.wslPamSourceLineEdit.text()
+            wsl_pam_destination = self.wslSdrLineEdit.text()
+
+            self.interplayTreeView.update(
+                pam_source, watch_folder, username, password, wsl_pam_source
+            )
+            self.interplayTreeView.threadsignal.connect(self.onFinished)
+            self.sdrTreeView.update(
+                pam_destination, watch_folder, username, password, wsl_pam_destination
+            )
+            self.sdrTreeView.threadsignal.connect(self.onFinished)
+
+        except WSApiException as e:
+            self.interplayTreeView.setEnabled(True)
+            self.sdrTreeView.setEnabled(True)
+            self.updateBtn.setEnabled(True)
+            self.status(str(e))
+
+    def onFinished(self) -&gt; None:
+        &#34;&#34;&#34;
+        Enable the update button.
+
+        &#34;&#34;&#34;
+        if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
+            self.updateBtn.setEnabled(True)
+
+
+if __name__ == &#34;__main__&#34;:
+    import sys
+    from PyQt5.QtWidgets import QApplication
+
+    interplaydata = [
+        {&#34;name&#34;: &#34;root&#34;, &#34;level&#34;: 0, &#34;leaves&#34;: 7, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder1&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 1, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder2&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 0, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder3&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 3, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder4&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 3, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;subfolder4&#34;, &#34;level&#34;: 2, &#34;leaves&#34;: 2, &#34;parent&#34;: &#34;folder4&#34;},
+    ]
+
+    sdrdata = [
+        {&#34;name&#34;: &#34;root&#34;, &#34;level&#34;: 0, &#34;leaves&#34;: 6, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder1&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 0, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder2&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 0, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder3&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 3, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;folder4&#34;, &#34;level&#34;: 1, &#34;leaves&#34;: 3, &#34;parent&#34;: &#34;root&#34;},
+        {&#34;name&#34;: &#34;subfolder4&#34;, &#34;level&#34;: 2, &#34;leaves&#34;: 2, &#34;parent&#34;: &#34;folder4&#34;},
+    ]
+
+    app = QApplication(sys.argv)
+    Form = QWidget()
+    ui = SyncWidget()
+    ui.setupUi(Form, interplaydata, sdrdata)
+    Form.show()
+    sys.exit(app.exec_())</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="sdr.src.view.syncwidget.SyncWidget"><code class="flex name class">
+<span>class <span class="ident">SyncWidget</span></span>
+<span>(</span><span>parent)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sync ui with the interplay tree widgets.</p>
+<h2 id="methods">Methods</h2>
+<p>setConfigs()
+set the settings tab with saved data.</p>
+<p>status(msg_text: str)
+set the statusbar text.</p>
+<p>saveConfig()
+save configs from settings tab.</p>
+<p>addAssetTab()
+add tab widget with the interplaytree widgets.</p>
+<p>addSettingTab()
+add settings tab widget.</p>
+<p>retranslateUi()
+translate method for the texts.</p>
+<p>update()
+update the interplaytree when the update button is pressed.</p>
+<p>onFinished()
+enable the update button.</p>
+<p>Inherit QWidget constructor and configure the widget.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>parent</code></strong> :&ensp;<code>QWidget</code></dt>
+<dd>parent widget object</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class SyncWidget(QWidget):
+    &#34;&#34;&#34;
+    Sync ui with the interplay tree widgets.
+
+    Methods
+    -------
+    setConfigs()
+        set the settings tab with saved data.
+
+    status(msg_text: str)
+        set the statusbar text.
+
+    saveConfig()
+        save configs from settings tab.
+
+    addAssetTab()
+        add tab widget with the interplaytree widgets.
+
+    addSettingTab()
+        add settings tab widget.
+
+    retranslateUi()
+        translate method for the texts.
+
+    update()
+        update the interplaytree when the update button is pressed.
+
+    onFinished()
+        enable the update button.
+
+    &#34;&#34;&#34;
+
+    def __init__(self, parent: QWidget) -&gt; None:
+        &#34;&#34;&#34;
+        Inherit QWidget constructor and configure the widget.
+
+        Parameters
+        ----------
+        parent : QWidget
+            parent widget object
+
+        &#34;&#34;&#34;
+        super(SyncWidget, self).__init__(parent)
+        self.theadcount = 0
+        self.parent = parent
+
+        self.config = QSettings(&#34;application&#34;, &#34;mainapp&#34;)
+        self.config.sync()
+        self.setObjectName(&#34;Form&#34;)
+        self.resize(720, 647)
+
+        self.tabWidget = QTabWidget(self)
+        self.tabWidget.setCurrentIndex(0)
+
+        self.assetTab = QWidget()
+        self.addAssetTab()
+
+        self.settingsTab = QWidget()
+        self.addSettingTab()
+
+        verticalLayout = QVBoxLayout(self)
+        verticalLayout.addWidget(self.tabWidget)
+
+        self.retranslateUi()
+
+        QMetaObject.connectSlotsByName(self)
+        self.setConfigs()
+
+    def setConfigs(self) -&gt; None:
+        &#34;&#34;&#34;
+        Set the settings tab with saved data.
+
+        &#34;&#34;&#34;
+        default = {
+            &#34;pamSource&#34;: &#34;&#34;,
+            &#34;pamDestination&#34;: &#34;&#34;,
+            &#34;watchFolder&#34;: &#34;&#34;,
+            &#34;username&#34;: &#34;&#34;,
+            &#34;password&#34;: &#34;&#34;,
+            &#34;wslInterplay&#34;: &#34;&#34;,
+            &#34;wslSdr&#34;: &#34;&#34;,
+        }
+        self.pamSourceLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;pamSource&#34;]
+        )
+        self.pamDestinationLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;pamDestination&#34;]
+        )
+        self.watchFolderLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;watchFolder&#34;]
+        )
+        self.wslPamSourceLineEdit.setText(
+            self.config.value(&#34;mainapp&#34;, default)[&#34;wslInterplay&#34;]
+        )
+        self.wslSdrLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;wslSdr&#34;])
+        self.usernameLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;username&#34;])
+        self.passwordLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;password&#34;])
+
+    def status(self, msg_text: str) -&gt; None:
+        &#34;&#34;&#34;Set the statusbar text.
+
+        Parameters
+        ----------
+        msg_text : str
+            message to be shown in statusbar.
+
+        &#34;&#34;&#34;
+        self.parent.statusBar().showMessage(msg_text, 2000)
+
+    def saveConfig(self) -&gt; None:
+        &#34;&#34;&#34;
+        Save configs from settings tab.
+
+        &#34;&#34;&#34;
+        self.settings = {
+            &#34;pamSource&#34;: self.pamSourceLineEdit.text(),
+            &#34;pamDestination&#34;: self.pamDestinationLineEdit.text(),
+            &#34;watchFolder&#34;: self.watchFolderLineEdit.text(),
+            &#34;wslInterplay&#34;: self.wslPamSourceLineEdit.text(),
+            &#34;wslSdr&#34;: self.wslSdrLineEdit.text(),
+            &#34;username&#34;: self.usernameLineEdit.text(),
+            &#34;password&#34;: self.passwordLineEdit.text(),
+        }
+        self.config.setValue(&#34;mainapp&#34;, self.settings)
+        self.config.sync()
+        self.status(&#34;Settings have been saved.&#34;)
+
+    def addAssetTab(self) -&gt; None:
+        &#34;&#34;&#34;
+        Add tab widget with the interplaytree widgets.
+
+        &#34;&#34;&#34;
+        self.interplayTreeView = InterplayWidget(self.assetTab)
+        self.sdrTreeView = InterplayWidget(self.assetTab)
+
+        self.updateBtn = QPushButton(self.assetTab)
+        self.updateBtn.clicked.connect(self.update)
+
+        gridLayout = QGridLayout(self.assetTab)
+        gridLayout.addWidget(self.interplayTreeView, 0, 0, 1, 1)
+        gridLayout.addWidget(self.sdrTreeView, 0, 1, 1, 1)
+        gridLayout.addWidget(self.updateBtn, 1, 0, 1, 2)
+
+        self.tabWidget.addTab(self.assetTab, &#34;&#34;)
+
+    def addSettingTab(self) -&gt; None:
+        &#34;&#34;&#34;
+        Add settings tab widget.
+
+        &#34;&#34;&#34;
+        self.interplayGBox = QGroupBox(self.settingsTab)
+        self.pamSourceLbl = QLabel(self.interplayGBox)
+        self.pamSourceLineEdit = QLineEdit(self.interplayGBox)
+        self.pamSourceLineEdit.setText(&#34;&#34;)
+        self.pamDestinationLbl = QLabel(self.interplayGBox)
+        self.pamDestinationLineEdit = QLineEdit(self.interplayGBox)
+        self.watchFolderLbl = QLabel(self.interplayGBox)
+        self.watchFolderLineEdit = QLineEdit(self.interplayGBox)
+
+        interplayGLyt = QGridLayout(self.interplayGBox)
+        interplayGLyt.addWidget(self.pamSourceLbl, 0, 0, 1, 1)
+        interplayGLyt.addWidget(self.pamSourceLineEdit, 0, 1, 1, 1)
+        interplayGLyt.addWidget(self.pamDestinationLbl, 1, 0, 1, 1)
+        interplayGLyt.addWidget(self.pamDestinationLineEdit, 1, 1, 1, 1)
+        interplayGLyt.addWidget(self.watchFolderLbl, 2, 0, 1, 1)
+        interplayGLyt.addWidget(self.watchFolderLineEdit, 2, 1, 1, 1)
+
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+        self.wsGBox = QGroupBox(self.settingsTab)
+        self.wslpamSourceLbl = QLabel(self.wsGBox)
+        self.usernameLbl = QLabel(self.wsGBox)
+        self.usernameLineEdit = QLineEdit(self.wsGBox)
+        self.passwordLineEdit = QLineEdit(self.wsGBox)
+        self.passwordLineEdit.setEchoMode(QLineEdit.Password)
+        self.wslPamSourceLineEdit = QLineEdit(self.wsGBox)
+        self.wslPamSourceLineEdit.setText(&#34;&#34;)
+        self.passwordLbl = QLabel(self.wsGBox)
+        self.wslSdrLineEdit = QLineEdit(self.wsGBox)
+        self.wslSdrLbl = QLabel(self.wsGBox)
+        self.saveBtn = QPushButton(self.settingsTab)
+        self.saveBtn.clicked.connect(self.saveConfig)
+
+        wsGLyt = QGridLayout(self.wsGBox)
+        wsGLyt.addWidget(self.wslpamSourceLbl, 0, 0, 1, 1)
+        wsGLyt.addWidget(self.usernameLbl, 2, 0, 1, 1)
+        wsGLyt.addWidget(self.usernameLineEdit, 2, 1, 1, 1)
+        wsGLyt.addWidget(self.passwordLineEdit, 3, 1, 1, 1)
+        wsGLyt.addWidget(self.wslPamSourceLineEdit, 0, 1, 1, 1)
+        wsGLyt.addWidget(self.passwordLbl, 3, 0, 1, 1)
+        wsGLyt.addWidget(self.wslSdrLineEdit, 1, 1, 1, 1)
+        wsGLyt.addWidget(self.wslSdrLbl, 1, 0, 1, 1)
+
+        verticalLayout = QVBoxLayout(self.settingsTab)
+        verticalLayout.addWidget(self.interplayGBox)
+        verticalLayout.addItem(spacerItem)
+        verticalLayout.addWidget(self.wsGBox)
+        verticalLayout.addWidget(self.saveBtn)
+
+        self.tabWidget.addTab(self.settingsTab, &#34;&#34;)
+
+    def retranslateUi(self) -&gt; None:
+        &#34;&#34;&#34;
+        Translate method for the texts.
+
+        &#34;&#34;&#34;
+        _translate = QCoreApplication.translate
+        self.setWindowTitle(_translate(&#34;SDR MONITOR&#34;, &#34;SDR MONITOR&#34;))
+
+        self.updateBtn.setText(_translate(&#34;Form&#34;, &#34;Update&#34;))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.assetTab), _translate(&#34;Form&#34;, &#34;Assets&#34;)
+        )
+        self.interplayGBox.setTitle(_translate(&#34;Form&#34;, &#34;INTERPLAY&#34;))
+        self.pamSourceLbl.setText(_translate(&#34;Form&#34;, &#34;PAM SOURCE&#34;))
+        self.pamDestinationLbl.setText(_translate(&#34;Form&#34;, &#34;PAM DESTINATION&#34;))
+        self.watchFolderLbl.setText(_translate(&#34;Form&#34;, &#34;WATCHFOLDER&#34;))
+        self.wsGBox.setTitle(_translate(&#34;Form&#34;, &#34;WEBSERVICE&#34;))
+        self.wslpamSourceLbl.setText(_translate(&#34;Form&#34;, &#34;WSL INTERPLAY&#34;))
+        self.usernameLbl.setText(_translate(&#34;Form&#34;, &#34;USERNAME&#34;))
+        self.passwordLbl.setText(_translate(&#34;Form&#34;, &#34;PASSWORD&#34;))
+        self.wslSdrLbl.setText(_translate(&#34;Form&#34;, &#34;WSL SDR&#34;))
+        self.saveBtn.setText(_translate(&#34;Form&#34;, &#34;Save&#34;))
+        self.tabWidget.setTabText(
+            self.tabWidget.indexOf(self.settingsTab), _translate(&#34;Form&#34;, &#34;Settings&#34;)
+        )
+
+    def update(self) -&gt; None:
+        &#34;&#34;&#34;
+        Update the interplaytree when the update button is pressed.
+
+        &#34;&#34;&#34;
+        try:
+            self.updateBtn.setEnabled(False)
+
+            pam_source = self.pamSourceLineEdit.text()
+            pam_destination = self.pamDestinationLineEdit.text()
+            watch_folder = self.watchFolderLineEdit.text()
+            username = self.usernameLineEdit.text()
+            password = self.passwordLineEdit.text()
+            wsl_pam_source = self.wslPamSourceLineEdit.text()
+            wsl_pam_destination = self.wslSdrLineEdit.text()
+
+            self.interplayTreeView.update(
+                pam_source, watch_folder, username, password, wsl_pam_source
+            )
+            self.interplayTreeView.threadsignal.connect(self.onFinished)
+            self.sdrTreeView.update(
+                pam_destination, watch_folder, username, password, wsl_pam_destination
+            )
+            self.sdrTreeView.threadsignal.connect(self.onFinished)
+
+        except WSApiException as e:
+            self.interplayTreeView.setEnabled(True)
+            self.sdrTreeView.setEnabled(True)
+            self.updateBtn.setEnabled(True)
+            self.status(str(e))
+
+    def onFinished(self) -&gt; None:
+        &#34;&#34;&#34;
+        Enable the update button.
+
+        &#34;&#34;&#34;
+        if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
+            self.updateBtn.setEnabled(True)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>PyQt5.QtWidgets.QWidget</li>
+<li>PyQt5.QtCore.QObject</li>
+<li>sip.wrapper</li>
+<li>PyQt5.QtGui.QPaintDevice</li>
+<li>sip.simplewrapper</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="sdr.src.view.syncwidget.SyncWidget.addAssetTab"><code class="name flex">
+<span>def <span class="ident">addAssetTab</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Add tab widget with the interplaytree widgets.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def addAssetTab(self) -&gt; None:
+    &#34;&#34;&#34;
+    Add tab widget with the interplaytree widgets.
+
+    &#34;&#34;&#34;
+    self.interplayTreeView = InterplayWidget(self.assetTab)
+    self.sdrTreeView = InterplayWidget(self.assetTab)
+
+    self.updateBtn = QPushButton(self.assetTab)
+    self.updateBtn.clicked.connect(self.update)
+
+    gridLayout = QGridLayout(self.assetTab)
+    gridLayout.addWidget(self.interplayTreeView, 0, 0, 1, 1)
+    gridLayout.addWidget(self.sdrTreeView, 0, 1, 1, 1)
+    gridLayout.addWidget(self.updateBtn, 1, 0, 1, 2)
+
+    self.tabWidget.addTab(self.assetTab, &#34;&#34;)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.addSettingTab"><code class="name flex">
+<span>def <span class="ident">addSettingTab</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Add settings tab widget.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def addSettingTab(self) -&gt; None:
+    &#34;&#34;&#34;
+    Add settings tab widget.
+
+    &#34;&#34;&#34;
+    self.interplayGBox = QGroupBox(self.settingsTab)
+    self.pamSourceLbl = QLabel(self.interplayGBox)
+    self.pamSourceLineEdit = QLineEdit(self.interplayGBox)
+    self.pamSourceLineEdit.setText(&#34;&#34;)
+    self.pamDestinationLbl = QLabel(self.interplayGBox)
+    self.pamDestinationLineEdit = QLineEdit(self.interplayGBox)
+    self.watchFolderLbl = QLabel(self.interplayGBox)
+    self.watchFolderLineEdit = QLineEdit(self.interplayGBox)
+
+    interplayGLyt = QGridLayout(self.interplayGBox)
+    interplayGLyt.addWidget(self.pamSourceLbl, 0, 0, 1, 1)
+    interplayGLyt.addWidget(self.pamSourceLineEdit, 0, 1, 1, 1)
+    interplayGLyt.addWidget(self.pamDestinationLbl, 1, 0, 1, 1)
+    interplayGLyt.addWidget(self.pamDestinationLineEdit, 1, 1, 1, 1)
+    interplayGLyt.addWidget(self.watchFolderLbl, 2, 0, 1, 1)
+    interplayGLyt.addWidget(self.watchFolderLineEdit, 2, 1, 1, 1)
+
+    spacerItem = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+
+    self.wsGBox = QGroupBox(self.settingsTab)
+    self.wslpamSourceLbl = QLabel(self.wsGBox)
+    self.usernameLbl = QLabel(self.wsGBox)
+    self.usernameLineEdit = QLineEdit(self.wsGBox)
+    self.passwordLineEdit = QLineEdit(self.wsGBox)
+    self.passwordLineEdit.setEchoMode(QLineEdit.Password)
+    self.wslPamSourceLineEdit = QLineEdit(self.wsGBox)
+    self.wslPamSourceLineEdit.setText(&#34;&#34;)
+    self.passwordLbl = QLabel(self.wsGBox)
+    self.wslSdrLineEdit = QLineEdit(self.wsGBox)
+    self.wslSdrLbl = QLabel(self.wsGBox)
+    self.saveBtn = QPushButton(self.settingsTab)
+    self.saveBtn.clicked.connect(self.saveConfig)
+
+    wsGLyt = QGridLayout(self.wsGBox)
+    wsGLyt.addWidget(self.wslpamSourceLbl, 0, 0, 1, 1)
+    wsGLyt.addWidget(self.usernameLbl, 2, 0, 1, 1)
+    wsGLyt.addWidget(self.usernameLineEdit, 2, 1, 1, 1)
+    wsGLyt.addWidget(self.passwordLineEdit, 3, 1, 1, 1)
+    wsGLyt.addWidget(self.wslPamSourceLineEdit, 0, 1, 1, 1)
+    wsGLyt.addWidget(self.passwordLbl, 3, 0, 1, 1)
+    wsGLyt.addWidget(self.wslSdrLineEdit, 1, 1, 1, 1)
+    wsGLyt.addWidget(self.wslSdrLbl, 1, 0, 1, 1)
+
+    verticalLayout = QVBoxLayout(self.settingsTab)
+    verticalLayout.addWidget(self.interplayGBox)
+    verticalLayout.addItem(spacerItem)
+    verticalLayout.addWidget(self.wsGBox)
+    verticalLayout.addWidget(self.saveBtn)
+
+    self.tabWidget.addTab(self.settingsTab, &#34;&#34;)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.onFinished"><code class="name flex">
+<span>def <span class="ident">onFinished</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Enable the update button.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def onFinished(self) -&gt; None:
+    &#34;&#34;&#34;
+    Enable the update button.
+
+    &#34;&#34;&#34;
+    if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
+        self.updateBtn.setEnabled(True)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.retranslateUi"><code class="name flex">
+<span>def <span class="ident">retranslateUi</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Translate method for the texts.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def retranslateUi(self) -&gt; None:
+    &#34;&#34;&#34;
+    Translate method for the texts.
+
+    &#34;&#34;&#34;
+    _translate = QCoreApplication.translate
+    self.setWindowTitle(_translate(&#34;SDR MONITOR&#34;, &#34;SDR MONITOR&#34;))
+
+    self.updateBtn.setText(_translate(&#34;Form&#34;, &#34;Update&#34;))
+    self.tabWidget.setTabText(
+        self.tabWidget.indexOf(self.assetTab), _translate(&#34;Form&#34;, &#34;Assets&#34;)
+    )
+    self.interplayGBox.setTitle(_translate(&#34;Form&#34;, &#34;INTERPLAY&#34;))
+    self.pamSourceLbl.setText(_translate(&#34;Form&#34;, &#34;PAM SOURCE&#34;))
+    self.pamDestinationLbl.setText(_translate(&#34;Form&#34;, &#34;PAM DESTINATION&#34;))
+    self.watchFolderLbl.setText(_translate(&#34;Form&#34;, &#34;WATCHFOLDER&#34;))
+    self.wsGBox.setTitle(_translate(&#34;Form&#34;, &#34;WEBSERVICE&#34;))
+    self.wslpamSourceLbl.setText(_translate(&#34;Form&#34;, &#34;WSL INTERPLAY&#34;))
+    self.usernameLbl.setText(_translate(&#34;Form&#34;, &#34;USERNAME&#34;))
+    self.passwordLbl.setText(_translate(&#34;Form&#34;, &#34;PASSWORD&#34;))
+    self.wslSdrLbl.setText(_translate(&#34;Form&#34;, &#34;WSL SDR&#34;))
+    self.saveBtn.setText(_translate(&#34;Form&#34;, &#34;Save&#34;))
+    self.tabWidget.setTabText(
+        self.tabWidget.indexOf(self.settingsTab), _translate(&#34;Form&#34;, &#34;Settings&#34;)
+    )</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.saveConfig"><code class="name flex">
+<span>def <span class="ident">saveConfig</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Save configs from settings tab.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def saveConfig(self) -&gt; None:
+    &#34;&#34;&#34;
+    Save configs from settings tab.
+
+    &#34;&#34;&#34;
+    self.settings = {
+        &#34;pamSource&#34;: self.pamSourceLineEdit.text(),
+        &#34;pamDestination&#34;: self.pamDestinationLineEdit.text(),
+        &#34;watchFolder&#34;: self.watchFolderLineEdit.text(),
+        &#34;wslInterplay&#34;: self.wslPamSourceLineEdit.text(),
+        &#34;wslSdr&#34;: self.wslSdrLineEdit.text(),
+        &#34;username&#34;: self.usernameLineEdit.text(),
+        &#34;password&#34;: self.passwordLineEdit.text(),
+    }
+    self.config.setValue(&#34;mainapp&#34;, self.settings)
+    self.config.sync()
+    self.status(&#34;Settings have been saved.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.setConfigs"><code class="name flex">
+<span>def <span class="ident">setConfigs</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Set the settings tab with saved data.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def setConfigs(self) -&gt; None:
+    &#34;&#34;&#34;
+    Set the settings tab with saved data.
+
+    &#34;&#34;&#34;
+    default = {
+        &#34;pamSource&#34;: &#34;&#34;,
+        &#34;pamDestination&#34;: &#34;&#34;,
+        &#34;watchFolder&#34;: &#34;&#34;,
+        &#34;username&#34;: &#34;&#34;,
+        &#34;password&#34;: &#34;&#34;,
+        &#34;wslInterplay&#34;: &#34;&#34;,
+        &#34;wslSdr&#34;: &#34;&#34;,
+    }
+    self.pamSourceLineEdit.setText(
+        self.config.value(&#34;mainapp&#34;, default)[&#34;pamSource&#34;]
+    )
+    self.pamDestinationLineEdit.setText(
+        self.config.value(&#34;mainapp&#34;, default)[&#34;pamDestination&#34;]
+    )
+    self.watchFolderLineEdit.setText(
+        self.config.value(&#34;mainapp&#34;, default)[&#34;watchFolder&#34;]
+    )
+    self.wslPamSourceLineEdit.setText(
+        self.config.value(&#34;mainapp&#34;, default)[&#34;wslInterplay&#34;]
+    )
+    self.wslSdrLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;wslSdr&#34;])
+    self.usernameLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;username&#34;])
+    self.passwordLineEdit.setText(self.config.value(&#34;mainapp&#34;, default)[&#34;password&#34;])</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.status"><code class="name flex">
+<span>def <span class="ident">status</span></span>(<span>self, msg_text)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Set the statusbar text.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>msg_text</code></strong> :&ensp;<code>str</code></dt>
+<dd>message to be shown in statusbar.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def status(self, msg_text: str) -&gt; None:
+    &#34;&#34;&#34;Set the statusbar text.
+
+    Parameters
+    ----------
+    msg_text : str
+        message to be shown in statusbar.
+
+    &#34;&#34;&#34;
+    self.parent.statusBar().showMessage(msg_text, 2000)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Update the interplaytree when the update button is pressed.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def update(self) -&gt; None:
+    &#34;&#34;&#34;
+    Update the interplaytree when the update button is pressed.
+
+    &#34;&#34;&#34;
+    try:
+        self.updateBtn.setEnabled(False)
+
+        pam_source = self.pamSourceLineEdit.text()
+        pam_destination = self.pamDestinationLineEdit.text()
+        watch_folder = self.watchFolderLineEdit.text()
+        username = self.usernameLineEdit.text()
+        password = self.passwordLineEdit.text()
+        wsl_pam_source = self.wslPamSourceLineEdit.text()
+        wsl_pam_destination = self.wslSdrLineEdit.text()
+
+        self.interplayTreeView.update(
+            pam_source, watch_folder, username, password, wsl_pam_source
+        )
+        self.interplayTreeView.threadsignal.connect(self.onFinished)
+        self.sdrTreeView.update(
+            pam_destination, watch_folder, username, password, wsl_pam_destination
+        )
+        self.sdrTreeView.threadsignal.connect(self.onFinished)
+
+    except WSApiException as e:
+        self.interplayTreeView.setEnabled(True)
+        self.sdrTreeView.setEnabled(True)
+        self.updateBtn.setEnabled(True)
+        self.status(str(e))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="sdr.src.view" href="index.html">sdr.src.view</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sdr.src.view.syncwidget.SyncWidget" href="#sdr.src.view.syncwidget.SyncWidget">SyncWidget</a></code></h4>
+<ul class="two-column">
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.addAssetTab" href="#sdr.src.view.syncwidget.SyncWidget.addAssetTab">addAssetTab</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.addSettingTab" href="#sdr.src.view.syncwidget.SyncWidget.addSettingTab">addSettingTab</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.onFinished" href="#sdr.src.view.syncwidget.SyncWidget.onFinished">onFinished</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.retranslateUi" href="#sdr.src.view.syncwidget.SyncWidget.retranslateUi">retranslateUi</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.saveConfig" href="#sdr.src.view.syncwidget.SyncWidget.saveConfig">saveConfig</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.setConfigs" href="#sdr.src.view.syncwidget.SyncWidget.setConfigs">setConfigs</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.status" href="#sdr.src.view.syncwidget.SyncWidget.status">status</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.update" href="#sdr.src.view.syncwidget.SyncWidget.update">update</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

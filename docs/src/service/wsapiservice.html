@@ -1,0 +1,646 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.6.2" />
+<title>sdr.src.service.wsapiservice API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase;cursor:pointer}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>sdr.src.service.wsapiservice</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">from zeep import Client
+from zeep.xsd import Element, String, ComplexType
+from zeep.transports import Transport
+from src.service.folderabs import FolderABS
+from src.service.exceptions import WSApiException
+from typing import Tuple
+
+
+class WSApi(FolderABS):
+    &#34;&#34;&#34;
+    A class to get information from interplay webservice.
+
+    Methods
+    -------
+    getCredentials(usr, pwd)
+        Create a xsd element object for authentication.
+
+    setClient(wsdl)
+        Sets the wsdl url address of the interplay webservice.
+
+    setWatchFolderUrl(folder_to_watch)
+        Sets the folder of the interplay that will be used as root
+        folder to retrieve the informations.
+
+    listFolder(path)
+        Lists all folders and files of a given path.
+    &#34;&#34;&#34;
+
+    def __init__(self, interplay: str, product: str, apiusr: str, apipwd: str) -&gt; None:
+        &#34;&#34;&#34;
+        Parameters
+        ----------
+        interplay : str
+            Interplay name as configured in Interplay WebService settings
+
+        product : str
+            Product name. Used to be the novel name.
+
+        apiusr : str
+            User name to access interplay. Should have minimum read access.
+
+        apipwd : str
+            Password for the user to access interplay.
+        &#34;&#34;&#34;
+        self.interplay = f&#34;interplay://{interplay}&#34;
+        self.product = product
+        self.header_auth = self.getCredentials(apiusr, apipwd)
+
+    def getCredentials(self, usr: str, pwd: str) -&gt; Element:
+        &#34;&#34;&#34;Create a xsd element object.
+
+        It is the header necessary for the webservice credentials
+
+        Parameters
+        ----------
+        usr: str
+            Webservice user name
+
+        pwd: str
+            Webservice password
+
+        Returns
+        -------
+        Element
+            header xsd object for api credential.
+        &#34;&#34;&#34;
+        element = &#34;{http://avid.com/interplay/ws/assets/types}&#34;
+        creds = [
+            Element(f&#34;{element}Username&#34;, String()),
+            Element(f&#34;{element}Password&#34;, String()),
+        ]
+        header = Element(f&#34;{element}UserCredentials&#34;, ComplexType(creds))
+        return header(Username=usr, Password=pwd)
+
+    def setClient(self, wsdl: str) -&gt; None:
+        &#34;&#34;&#34;Sets the wsdl url address of the interplay webservice.
+
+        Parameters
+        ----------
+        wsdl : str
+            Interplay WeService URL.
+
+        Raises
+        ------
+        WSApiException
+            If not able to connect to interplay webservice.
+        &#34;&#34;&#34;
+        try:
+            transport = Transport(timeout=3)
+            self.client = Client(wsdl=wsdl, transport=transport)
+        except Exception as e:
+            err = f&#34;WebService unavailable. Check {wsdl} configuration.&#34;
+            raise WSApiException(err)
+
+    def setWatchFolderUrl(self, folder_to_watch: str) -&gt; None:
+        &#34;&#34;&#34;Sets the folder of the interplay
+
+        The folder will be used as root folder to retrieve the info.
+
+        Parameters
+        ----------
+        folder_to_watch : str
+            Folder path of the interplay.
+        &#34;&#34;&#34;
+        self.watchfolder = folder_to_watch
+        self.endpoint = {
+            &#34;InterplayURI&#34;: f&#34;{self.interplay}/{folder_to_watch}&#34;,
+            &#34;IncludeFolders&#34;: True,
+            &#34;IncludeFiles&#34;: True,
+            &#34;IncludeMOBs&#34;: True,
+            &#34;ReturnAttributes&#34;: {
+                &#34;Attribute&#34;: [
+                    {&#34;Name&#34;: &#34;Display Name&#34;, &#34;Group&#34;: &#34;USER&#34;},
+                    {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;},
+                ]
+            },
+        }
+
+    def webServiceClient(self, path: str) -&gt; dict:
+        &#34;&#34;&#34;Requests webservice data from GetChildren.
+
+        Parameters
+        ----------
+        path: str
+            Folder that will be used to retrieve the info.
+
+        Returns
+        -------
+        dict
+            API json response.
+        &#34;&#34;&#34;
+        self.setWatchFolderUrl(path)
+        client_response = self.client.service.GetChildren(
+            **self.endpoint, _soapheaders=[self.header_auth]
+        )[&#34;Results&#34;]
+        return client_response
+
+    def listFolder(self, path: str) -&gt; Tuple[list, list]:
+        &#34;&#34;&#34;Lists all folders and files of a given path.
+
+        Parameters
+        ----------
+        path: str
+            Folder that will be used to retrieve the info.
+
+        Returns
+        -------
+        folder : list
+            All folders of the given path.
+
+        files: list
+            All files of the given path.
+        &#34;&#34;&#34;
+        result = self.webServiceClient(path)
+        folder = []
+        files = []
+        if result is None:
+            return folder, files
+        for i in result[&#34;AssetDescription&#34;]:
+            _type = i[&#34;Attributes&#34;][&#34;Attribute&#34;].pop()
+            if _type[&#34;_value_1&#34;] == &#34;folder&#34;:
+                location = i[&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;]
+                folder.append(f&#34;{self.watchfolder}/{location}&#34;)
+            else:
+                files.append(i[&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;])
+        return folder, files</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="sdr.src.service.wsapiservice.WSApi"><code class="flex name class">
+<span>class <span class="ident">WSApi</span></span>
+<span>(</span><span>interplay, product, apiusr, apipwd)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A class to get information from interplay webservice.</p>
+<h2 id="methods">Methods</h2>
+<p>getCredentials(usr, pwd)
+Create a xsd element object for authentication.</p>
+<p>setClient(wsdl)
+Sets the wsdl url address of the interplay webservice.</p>
+<p>setWatchFolderUrl(folder_to_watch)
+Sets the folder of the interplay that will be used as root
+folder to retrieve the informations.</p>
+<p>listFolder(path)
+Lists all folders and files of a given path.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>interplay</code></strong> :&ensp;<code>str</code></dt>
+<dd>Interplay name as configured in Interplay WebService settings</dd>
+<dt><strong><code>product</code></strong> :&ensp;<code>str</code></dt>
+<dd>Product name. Used to be the novel name.</dd>
+<dt><strong><code>apiusr</code></strong> :&ensp;<code>str</code></dt>
+<dd>User name to access interplay. Should have minimum read access.</dd>
+<dt><strong><code>apipwd</code></strong> :&ensp;<code>str</code></dt>
+<dd>Password for the user to access interplay.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">class WSApi(FolderABS):
+    &#34;&#34;&#34;
+    A class to get information from interplay webservice.
+
+    Methods
+    -------
+    getCredentials(usr, pwd)
+        Create a xsd element object for authentication.
+
+    setClient(wsdl)
+        Sets the wsdl url address of the interplay webservice.
+
+    setWatchFolderUrl(folder_to_watch)
+        Sets the folder of the interplay that will be used as root
+        folder to retrieve the informations.
+
+    listFolder(path)
+        Lists all folders and files of a given path.
+    &#34;&#34;&#34;
+
+    def __init__(self, interplay: str, product: str, apiusr: str, apipwd: str) -&gt; None:
+        &#34;&#34;&#34;
+        Parameters
+        ----------
+        interplay : str
+            Interplay name as configured in Interplay WebService settings
+
+        product : str
+            Product name. Used to be the novel name.
+
+        apiusr : str
+            User name to access interplay. Should have minimum read access.
+
+        apipwd : str
+            Password for the user to access interplay.
+        &#34;&#34;&#34;
+        self.interplay = f&#34;interplay://{interplay}&#34;
+        self.product = product
+        self.header_auth = self.getCredentials(apiusr, apipwd)
+
+    def getCredentials(self, usr: str, pwd: str) -&gt; Element:
+        &#34;&#34;&#34;Create a xsd element object.
+
+        It is the header necessary for the webservice credentials
+
+        Parameters
+        ----------
+        usr: str
+            Webservice user name
+
+        pwd: str
+            Webservice password
+
+        Returns
+        -------
+        Element
+            header xsd object for api credential.
+        &#34;&#34;&#34;
+        element = &#34;{http://avid.com/interplay/ws/assets/types}&#34;
+        creds = [
+            Element(f&#34;{element}Username&#34;, String()),
+            Element(f&#34;{element}Password&#34;, String()),
+        ]
+        header = Element(f&#34;{element}UserCredentials&#34;, ComplexType(creds))
+        return header(Username=usr, Password=pwd)
+
+    def setClient(self, wsdl: str) -&gt; None:
+        &#34;&#34;&#34;Sets the wsdl url address of the interplay webservice.
+
+        Parameters
+        ----------
+        wsdl : str
+            Interplay WeService URL.
+
+        Raises
+        ------
+        WSApiException
+            If not able to connect to interplay webservice.
+        &#34;&#34;&#34;
+        try:
+            transport = Transport(timeout=3)
+            self.client = Client(wsdl=wsdl, transport=transport)
+        except Exception as e:
+            err = f&#34;WebService unavailable. Check {wsdl} configuration.&#34;
+            raise WSApiException(err)
+
+    def setWatchFolderUrl(self, folder_to_watch: str) -&gt; None:
+        &#34;&#34;&#34;Sets the folder of the interplay
+
+        The folder will be used as root folder to retrieve the info.
+
+        Parameters
+        ----------
+        folder_to_watch : str
+            Folder path of the interplay.
+        &#34;&#34;&#34;
+        self.watchfolder = folder_to_watch
+        self.endpoint = {
+            &#34;InterplayURI&#34;: f&#34;{self.interplay}/{folder_to_watch}&#34;,
+            &#34;IncludeFolders&#34;: True,
+            &#34;IncludeFiles&#34;: True,
+            &#34;IncludeMOBs&#34;: True,
+            &#34;ReturnAttributes&#34;: {
+                &#34;Attribute&#34;: [
+                    {&#34;Name&#34;: &#34;Display Name&#34;, &#34;Group&#34;: &#34;USER&#34;},
+                    {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;},
+                ]
+            },
+        }
+
+    def webServiceClient(self, path: str) -&gt; dict:
+        &#34;&#34;&#34;Requests webservice data from GetChildren.
+
+        Parameters
+        ----------
+        path: str
+            Folder that will be used to retrieve the info.
+
+        Returns
+        -------
+        dict
+            API json response.
+        &#34;&#34;&#34;
+        self.setWatchFolderUrl(path)
+        client_response = self.client.service.GetChildren(
+            **self.endpoint, _soapheaders=[self.header_auth]
+        )[&#34;Results&#34;]
+        return client_response
+
+    def listFolder(self, path: str) -&gt; Tuple[list, list]:
+        &#34;&#34;&#34;Lists all folders and files of a given path.
+
+        Parameters
+        ----------
+        path: str
+            Folder that will be used to retrieve the info.
+
+        Returns
+        -------
+        folder : list
+            All folders of the given path.
+
+        files: list
+            All files of the given path.
+        &#34;&#34;&#34;
+        result = self.webServiceClient(path)
+        folder = []
+        files = []
+        if result is None:
+            return folder, files
+        for i in result[&#34;AssetDescription&#34;]:
+            _type = i[&#34;Attributes&#34;][&#34;Attribute&#34;].pop()
+            if _type[&#34;_value_1&#34;] == &#34;folder&#34;:
+                location = i[&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;]
+                folder.append(f&#34;{self.watchfolder}/{location}&#34;)
+            else:
+                files.append(i[&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;])
+        return folder, files</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>src.service.folderabs.FolderABS</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="sdr.src.service.wsapiservice.WSApi.getCredentials"><code class="name flex">
+<span>def <span class="ident">getCredentials</span></span>(<span>self, usr, pwd)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Create a xsd element object.</p>
+<p>It is the header necessary for the webservice credentials</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>usr</code></strong> :&ensp;<code>str</code></dt>
+<dd>Webservice user name</dd>
+<dt><strong><code>pwd</code></strong> :&ensp;<code>str</code></dt>
+<dd>Webservice password</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Element</code></dt>
+<dd>header xsd object for api credential.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def getCredentials(self, usr: str, pwd: str) -&gt; Element:
+    &#34;&#34;&#34;Create a xsd element object.
+
+    It is the header necessary for the webservice credentials
+
+    Parameters
+    ----------
+    usr: str
+        Webservice user name
+
+    pwd: str
+        Webservice password
+
+    Returns
+    -------
+    Element
+        header xsd object for api credential.
+    &#34;&#34;&#34;
+    element = &#34;{http://avid.com/interplay/ws/assets/types}&#34;
+    creds = [
+        Element(f&#34;{element}Username&#34;, String()),
+        Element(f&#34;{element}Password&#34;, String()),
+    ]
+    header = Element(f&#34;{element}UserCredentials&#34;, ComplexType(creds))
+    return header(Username=usr, Password=pwd)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.service.wsapiservice.WSApi.listFolder"><code class="name flex">
+<span>def <span class="ident">listFolder</span></span>(<span>self, path)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Lists all folders and files of a given path.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Folder that will be used to retrieve the info.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>folder</code></strong> :&ensp;<code>list</code></dt>
+<dd>All folders of the given path.</dd>
+<dt><strong><code>files</code></strong> :&ensp;<code>list</code></dt>
+<dd>All files of the given path.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def listFolder(self, path: str) -&gt; Tuple[list, list]:
+    &#34;&#34;&#34;Lists all folders and files of a given path.
+
+    Parameters
+    ----------
+    path: str
+        Folder that will be used to retrieve the info.
+
+    Returns
+    -------
+    folder : list
+        All folders of the given path.
+
+    files: list
+        All files of the given path.
+    &#34;&#34;&#34;
+    result = self.webServiceClient(path)
+    folder = []
+    files = []
+    if result is None:
+        return folder, files
+    for i in result[&#34;AssetDescription&#34;]:
+        _type = i[&#34;Attributes&#34;][&#34;Attribute&#34;].pop()
+        if _type[&#34;_value_1&#34;] == &#34;folder&#34;:
+            location = i[&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;]
+            folder.append(f&#34;{self.watchfolder}/{location}&#34;)
+        else:
+            files.append(i[&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;])
+    return folder, files</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.service.wsapiservice.WSApi.setClient"><code class="name flex">
+<span>def <span class="ident">setClient</span></span>(<span>self, wsdl)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sets the wsdl url address of the interplay webservice.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>wsdl</code></strong> :&ensp;<code>str</code></dt>
+<dd>Interplay WeService URL.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>WSApiException</code></dt>
+<dd>If not able to connect to interplay webservice.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def setClient(self, wsdl: str) -&gt; None:
+    &#34;&#34;&#34;Sets the wsdl url address of the interplay webservice.
+
+    Parameters
+    ----------
+    wsdl : str
+        Interplay WeService URL.
+
+    Raises
+    ------
+    WSApiException
+        If not able to connect to interplay webservice.
+    &#34;&#34;&#34;
+    try:
+        transport = Transport(timeout=3)
+        self.client = Client(wsdl=wsdl, transport=transport)
+    except Exception as e:
+        err = f&#34;WebService unavailable. Check {wsdl} configuration.&#34;
+        raise WSApiException(err)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.service.wsapiservice.WSApi.setWatchFolderUrl"><code class="name flex">
+<span>def <span class="ident">setWatchFolderUrl</span></span>(<span>self, folder_to_watch)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sets the folder of the interplay</p>
+<p>The folder will be used as root folder to retrieve the info.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>folder_to_watch</code></strong> :&ensp;<code>str</code></dt>
+<dd>Folder path of the interplay.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def setWatchFolderUrl(self, folder_to_watch: str) -&gt; None:
+    &#34;&#34;&#34;Sets the folder of the interplay
+
+    The folder will be used as root folder to retrieve the info.
+
+    Parameters
+    ----------
+    folder_to_watch : str
+        Folder path of the interplay.
+    &#34;&#34;&#34;
+    self.watchfolder = folder_to_watch
+    self.endpoint = {
+        &#34;InterplayURI&#34;: f&#34;{self.interplay}/{folder_to_watch}&#34;,
+        &#34;IncludeFolders&#34;: True,
+        &#34;IncludeFiles&#34;: True,
+        &#34;IncludeMOBs&#34;: True,
+        &#34;ReturnAttributes&#34;: {
+            &#34;Attribute&#34;: [
+                {&#34;Name&#34;: &#34;Display Name&#34;, &#34;Group&#34;: &#34;USER&#34;},
+                {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;},
+            ]
+        },
+    }</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.service.wsapiservice.WSApi.webServiceClient"><code class="name flex">
+<span>def <span class="ident">webServiceClient</span></span>(<span>self, path)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Requests webservice data from GetChildren.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>path</code></strong> :&ensp;<code>str</code></dt>
+<dd>Folder that will be used to retrieve the info.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>API json response.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def webServiceClient(self, path: str) -&gt; dict:
+    &#34;&#34;&#34;Requests webservice data from GetChildren.
+
+    Parameters
+    ----------
+    path: str
+        Folder that will be used to retrieve the info.
+
+    Returns
+    -------
+    dict
+        API json response.
+    &#34;&#34;&#34;
+    self.setWatchFolderUrl(path)
+    client_response = self.client.service.GetChildren(
+        **self.endpoint, _soapheaders=[self.header_auth]
+    )[&#34;Results&#34;]
+    return client_response</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="sdr.src.service" href="index.html">sdr.src.service</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="sdr.src.service.wsapiservice.WSApi" href="#sdr.src.service.wsapiservice.WSApi">WSApi</a></code></h4>
+<ul class="">
+<li><code><a title="sdr.src.service.wsapiservice.WSApi.getCredentials" href="#sdr.src.service.wsapiservice.WSApi.getCredentials">getCredentials</a></code></li>
+<li><code><a title="sdr.src.service.wsapiservice.WSApi.listFolder" href="#sdr.src.service.wsapiservice.WSApi.listFolder">listFolder</a></code></li>
+<li><code><a title="sdr.src.service.wsapiservice.WSApi.setClient" href="#sdr.src.service.wsapiservice.WSApi.setClient">setClient</a></code></li>
+<li><code><a title="sdr.src.service.wsapiservice.WSApi.setWatchFolderUrl" href="#sdr.src.service.wsapiservice.WSApi.setWatchFolderUrl">setWatchFolderUrl</a></code></li>
+<li><code><a title="sdr.src.service.wsapiservice.WSApi.webServiceClient" href="#sdr.src.service.wsapiservice.WSApi.webServiceClient">webServiceClient</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
