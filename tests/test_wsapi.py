@@ -4,6 +4,7 @@ from src.service.exceptions import WSApiException
 from unittest.mock import patch
 from unittest import mock
 from pytest import fixture, raises, mark
+from datetime import datetime
 
 
 @fixture(scope="session")
@@ -41,43 +42,7 @@ def test_set_client_exception(wsapi):
         == str(apiexec.value)
     )
 
-
-# @patch('src.service.wsapiservice.WSApi')
-@mark.skip
-@patch("src.service.wsapiservice.WSApi.webServiceClient")
-@patch("src.service.wsapiservice.Client")
-def test_web_service_client(mock_wsapi_client, mock_webservice, wsapi):
-    # TODO - Need to make this mock works
-    import pdb
-
-    pdb.set_trace()
-    # mock_wsapi_client.service.GetChildren.side_effect = [2]
-    wsapi.setClient("http://localhost/services/Assets?wsdl")
-    wsapi.webServiceClient("/Project")
-    assert mock_wsapi_client.call_count == 1
-    assert mock_wsapi_client.service.GetChildren.call_count == 1
-
-
-def test_watch_forder_uri(wsapi):
-    wsapi.setWatchFolderUrl(
-        "Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/INGEST/MATERIAL SR/"
-    )
-    result = {
-        "InterplayURI": "interplay://INTERPLAY-6/Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/INGEST/MATERIAL SR/",
-        "IncludeFolders": True,
-        "IncludeFiles": True,
-        "IncludeMOBs": True,
-        "ReturnAttributes": {
-            "Attribute": [
-                {"Name": "Display Name", "Group": "USER"},
-                {"Name": "Type", "Group": "SYSTEM"},
-            ]
-        },
-    }
-    assert wsapi.endpoint == result
-
-
-@patch("src.service.wsapiservice.WSApi.webServiceClient")
+@patch("src.service.wsapiservice.WSApi.webServiceGetChildren")
 def test_list_folders(mock_wsapi, wsapi):
     from tests.wsresultmock import mock_result
 
@@ -98,8 +63,23 @@ def test_list_folders(mock_wsapi, wsapi):
     folders, files = wsapi.listFolder(
         "Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/Folder has no folders or files/"
     )
-    mock_wsapi.assert_called_with(
-        "Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/Folder has no folders or files/"
-    )
+    mock_wsapi.assert_called_with("Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/Folder has no folders or files/")
     assert files == []
     assert folders == []
+
+@mark.skip
+def test_web_service_get_attributes():
+    uri = "interplay://INTERPLAY-6/Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/INGEST/MATERIAL SR/04-2019"
+    api = WSApi("INTERPLAY-6", "ORFAOS DA TERRA", "administrator", "Renwfyt@1444")
+    api.setClient("http://10.228.112.104/services/Assets?wsdl")
+    result = api.webServiceGetAttributes(uri)
+    # print(result)
+
+@mark.skip
+def test_get_asset_modified_date():
+    path = "Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/INGEST/MATERIAL SR/04-2019"
+    api = WSApi("INTERPLAY-6", "ORFAOS DA TERRA", "administrator", "Renwfyt@1444")
+    api.setClient("http://10.228.112.104/services/Assets?wsdl")
+    result = api.getAssetDate(path)
+    assert isinstance(result, datetime)
+    assert str(result) == "2019-04-08 22:25:39.785000-03:00"

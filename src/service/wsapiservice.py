@@ -4,6 +4,7 @@ from zeep.transports import Transport
 from src.service.folderabs import FolderABS
 from src.service.exceptions import WSApiException
 from typing import Tuple
+from datetime import datetime
 
 
 class WSApi(FolderABS):
@@ -18,12 +19,18 @@ class WSApi(FolderABS):
     setClient(wsdl)
         Sets the wsdl url address of the interplay webservice.
 
-    setWatchFolderUrl(folder_to_watch)
-        Sets the folder of the interplay that will be used as root
-        folder to retrieve the informations.
+    webServiceGetChildren(path)
+        requests webservice data from GetChildren.
+
+    webServiceGetAttributes(path)
+        requests webservice data from GetAttributes.
 
     listFolder(path)
         Lists all folders and files of a given path.
+
+    getAssetDate(path)
+        Get the asset modified date.
+
     """
 
     def __init__(self, interplay: str, product: str, apiusr: str, apipwd: str) -> None:
@@ -92,31 +99,7 @@ class WSApi(FolderABS):
             err = f"WebService unavailable. Check {wsdl} configuration."
             raise WSApiException(err)
 
-    def setWatchFolderUrl(self, folder_to_watch: str) -> None:
-        """Sets the folder of the interplay
-
-        The folder will be used as root folder to retrieve the info.
-
-        Parameters
-        ----------
-        folder_to_watch : str
-            Folder path of the interplay.
-        """
-        self.watchfolder = folder_to_watch
-        self.endpoint = {
-            "InterplayURI": f"{self.interplay}/{folder_to_watch}",
-            "IncludeFolders": True,
-            "IncludeFiles": True,
-            "IncludeMOBs": True,
-            "ReturnAttributes": {
-                "Attribute": [
-                    {"Name": "Display Name", "Group": "USER"},
-                    {"Name": "Type", "Group": "SYSTEM"},
-                ]
-            },
-        }
-
-    def webServiceClient(self, path: str) -> dict:
+    def webServiceGetChildren(self, path: str) -> dict:
         """Requests webservice data from GetChildren.
 
         Parameters
@@ -129,9 +112,48 @@ class WSApi(FolderABS):
         dict
             API json response.
         """
-        self.setWatchFolderUrl(path)
+        endpoint = {
+            "InterplayURI":  f"{self.interplay}/{path}",
+            "IncludeFolders": True,
+            "IncludeFiles": True,
+            "IncludeMOBs": True,
+            "ReturnAttributes": {
+                "Attribute": [
+                    {"Name": "Display Name", "Group": "USER"},
+                    {"Name": "Type", "Group": "SYSTEM"}
+                ]
+            },
+        }
         client_response = self.client.service.GetChildren(
-            **self.endpoint, _soapheaders=[self.header_auth]
+            **endpoint, _soapheaders=[self.header_auth]
+        )["Results"]
+        return client_response
+
+    def webServiceGetAttributes(self, path: str) -> dict:
+        """Requests webservice data from GetAttributes.
+
+        Parameters
+        ----------
+        path: str
+            Folder that will be used to retrieve the info.
+
+        Returns
+        -------
+        dict
+            API json response.
+        """
+        endpoint = {
+            "InterplayURIs": {
+                "InterplayURI": f"{self.interplay}/{path}",
+            },
+            "Attributes": {
+                "Attribute": [
+                    {"Name": "Modified Date", "Group": "SYSTEM"}
+                ]
+            },
+        }
+        client_response = self.client.service.GetAttributes(
+            **endpoint, _soapheaders=[self.header_auth]
         )["Results"]
         return client_response
 
@@ -151,16 +173,34 @@ class WSApi(FolderABS):
         files: list
             All files of the given path.
         """
-        result = self.webServiceClient(path)
         folder = []
         files = []
+        result = self.webServiceGetChildren(path)
         if result is None:
             return folder, files
         for i in result["AssetDescription"]:
             _type = i["Attributes"]["Attribute"].pop()
             if _type["_value_1"] == "folder":
                 location = i["Attributes"]["Attribute"][-1]["_value_1"]
-                folder.append(f"{self.watchfolder}/{location}")
+                folder.append(f"{path}/{location}")
             else:
                 files.append(i["Attributes"]["Attribute"][-1]["_value_1"])
         return folder, files
+
+    def getAssetDate(self, path: str) -> datetime:
+        """Get the asset modified date.
+
+        Parameters
+        ----------
+        path: str
+            Asset path that will be used to retrieve the info.
+
+        Returns
+        -------
+        datetime
+            modified date of the asset.
+
+        """
+        result = self.webServiceGetAttributes(path)
+        dt = result["AssetDescription"][0]["Attributes"]["Attribute"][-1]["_value_1"]
+        return datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S.%f%z')

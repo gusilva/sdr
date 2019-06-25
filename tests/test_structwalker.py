@@ -2,7 +2,7 @@ from src.service.structwalker import StructWalker
 from src.service.folderservice import FolderLister
 from src.service.folderabs import FolderABS
 from anytree import Node, RenderTree
-import pytest
+import pytest, os
 
 
 @pytest.fixture(scope="function")
@@ -38,6 +38,10 @@ def fnlister():
 def walker(fnlister):
     return StructWalker(fnlister)
 
+@pytest.fixture(scope="function")
+def walker2(fnlister):
+    return StructWalker(fnlister)
+
 
 def test_init_tree(walker):
     assert isinstance(walker.tree, Node)
@@ -67,3 +71,21 @@ def test_fix(walker, createfolders):
     for node, count, folder in zip(RenderTree(fixed), [5, 5, 1, 1, 0, 2, 2], folders):
         assert node.node.__dict__["leaves"] == count
         assert node.node.name.replace(createfolders.strpath, "") == folder
+
+def test_compare_trees(walker, walker2, createfolders):
+    walker.transverse(createfolders.strpath, walker.tree)
+    tree1 = walker.tree
+
+    createfolders.mkdir("folder5")
+
+    walker2.transverse(createfolders.strpath, walker2.tree)
+    tree2 = walker2.tree
+
+    # for f,i,node in RenderTree(tree1):
+    #     print(node.name)
+
+    # for f,i,node in RenderTree(tree2):
+    #     print(node.name)
+    print(os.path.abspath(createfolders.strpath+os.sep+'folder5'))
+    print(walker.compareTrees(tree2, tree1))
+    # assert '\\rootfolder2\\folder5' in walker.compareTrees(tree1, tree2)

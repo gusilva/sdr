@@ -91,3 +91,16 @@ class StructWalker(object):
                     parent.__dict__["leaves"] = count
 
         return parent
+
+    def compareTrees(self, left_tree: Node, right_tree: Node):
+        tree_1 = []
+        tree_2 = []
+
+        for node in RenderTree(left_tree):
+            tree_1.append(node.node.name)
+
+        for node in RenderTree(right_tree):
+            tree_2.append(node.node.name)
+
+        return set(tree_1).difference(tree_2)
+
