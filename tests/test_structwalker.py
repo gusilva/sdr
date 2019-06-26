@@ -57,20 +57,21 @@ def test_transverse_struct(walker, createfolders):
 
 
 def test_fix(walker, createfolders):
-    walker.transverse(createfolders.strpath, walker.tree)
+    rootfolder = createfolders.strpath
+    walker.transverse(rootfolder, walker.tree)
     fixed = walker.fix(walker.tree)
-    folders = [
-        "",
-        "",
-        "\\folder1",
-        "\\folder2",
-        "\\folder3",
-        "\\folder4",
-        "\\folder4\\subfolder4",
-    ]
-    for node, count, folder in zip(RenderTree(fixed), [5, 5, 1, 1, 0, 2, 2], folders):
-        assert node.node.__dict__["leaves"] == count
-        assert node.node.name.replace(createfolders.strpath, "") == folder
+    folders = {
+        '': 5,
+        f'{rootfolder}': 5,
+        f'{rootfolder}{os.sep}folder1': 1,
+        f'{rootfolder}{os.sep}folder2': 1,
+        f'{rootfolder}{os.sep}folder3': 0,
+        f'{rootfolder}{os.sep}folder4': 2,
+        f'{rootfolder}{os.sep}folder4{os.sep}subfolder4': 2
+    }
+    for node in RenderTree(fixed):
+        assert folders[node.node.name] == node.node.__dict__["leaves"]
+
 
 def test_compare_trees(walker, walker2, createfolders):
     walker.transverse(createfolders.strpath, walker.tree)
