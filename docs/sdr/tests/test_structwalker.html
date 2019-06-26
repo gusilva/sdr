@@ -26,7 +26,7 @@
 from src.service.folderservice import FolderLister
 from src.service.folderabs import FolderABS
 from anytree import Node, RenderTree
-import pytest
+import pytest, os
 
 
 @pytest.fixture(scope=&#34;function&#34;)
@@ -62,6 +62,10 @@ def fnlister():
 def walker(fnlister):
     return StructWalker(fnlister)
 
+@pytest.fixture(scope=&#34;function&#34;)
+def walker2(fnlister):
+    return StructWalker(fnlister)
+
 
 def test_init_tree(walker):
     assert isinstance(walker.tree, Node)
@@ -77,20 +81,45 @@ def test_transverse_struct(walker, createfolders):
 
 
 def test_fix(walker, createfolders):
-    walker.transverse(createfolders.strpath, walker.tree)
+    rootfolder = createfolders.strpath
+    walker.transverse(rootfolder, walker.tree)
     fixed = walker.fix(walker.tree)
-    folders = [
-        &#34;&#34;,
-        &#34;&#34;,
-        &#34;\\folder1&#34;,
-        &#34;\\folder2&#34;,
-        &#34;\\folder3&#34;,
-        &#34;\\folder4&#34;,
-        &#34;\\folder4\\subfolder4&#34;,
+    folders = {
+        &#39;&#39;: 5,
+        f&#39;{rootfolder}&#39;: 5,
+        f&#39;{rootfolder}{os.sep}folder1&#39;: 1,
+        f&#39;{rootfolder}{os.sep}folder2&#39;: 1,
+        f&#39;{rootfolder}{os.sep}folder3&#39;: 0,
+        f&#39;{rootfolder}{os.sep}folder4&#39;: 2,
+        f&#39;{rootfolder}{os.sep}folder4{os.sep}subfolder4&#39;: 2
+    }
+    for node in RenderTree(fixed):
+        assert folders[node.node.name] == node.node.__dict__[&#34;leaves&#34;]
+
+def test_convert_to_list(walker, createfolders):
+    expected = [
+        &#39;&#39;, 
+        f&#39;{createfolders.strpath}&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder2&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder3&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder4&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder4{os.sep}subfolder4&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder1&#39;
     ]
-    for node, count, folder in zip(RenderTree(fixed), [5, 5, 1, 1, 0, 2, 2], folders):
-        assert node.node.__dict__[&#34;leaves&#34;] == count
-        assert node.node.name.replace(createfolders.strpath, &#34;&#34;) == folder</code></pre>
+    walker.transverse(createfolders.strpath, walker.tree)
+    assert expected == walker.convertToList(walker.tree)
+
+
+def test_compare_trees(walker, walker2, createfolders):
+    walker.transverse(createfolders.strpath, walker.tree)
+    tree1 = walker.tree
+
+    createfolders.mkdir(&#34;folder5&#34;)
+
+    walker2.transverse(createfolders.strpath, walker2.tree)
+    tree2 = walker2.tree
+
+    assert os.path.abspath(createfolders.strpath+os.sep+&#39;folder5&#39;) in walker.compareTrees(tree2, tree1)</code></pre>
 </details>
 </section>
 <section>
@@ -143,6 +172,46 @@ def fnlister():
     return FolderLister()</code></pre>
 </details>
 </dd>
+<dt id="sdr.tests.test_structwalker.test_compare_trees"><code class="name flex">
+<span>def <span class="ident">test_compare_trees</span></span>(<span>walker, walker2, createfolders)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def test_compare_trees(walker, walker2, createfolders):
+    walker.transverse(createfolders.strpath, walker.tree)
+    tree1 = walker.tree
+
+    createfolders.mkdir(&#34;folder5&#34;)
+
+    walker2.transverse(createfolders.strpath, walker2.tree)
+    tree2 = walker2.tree
+
+    assert os.path.abspath(createfolders.strpath+os.sep+&#39;folder5&#39;) in walker.compareTrees(tree2, tree1)</code></pre>
+</details>
+</dd>
+<dt id="sdr.tests.test_structwalker.test_convert_to_list"><code class="name flex">
+<span>def <span class="ident">test_convert_to_list</span></span>(<span>walker, createfolders)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def test_convert_to_list(walker, createfolders):
+    expected = [
+        &#39;&#39;, 
+        f&#39;{createfolders.strpath}&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder2&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder3&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder4&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder4{os.sep}subfolder4&#39;, 
+        f&#39;{createfolders.strpath}{os.sep}folder1&#39;
+    ]
+    walker.transverse(createfolders.strpath, walker.tree)
+    assert expected == walker.convertToList(walker.tree)</code></pre>
+</details>
+</dd>
 <dt id="sdr.tests.test_structwalker.test_fix"><code class="name flex">
 <span>def <span class="ident">test_fix</span></span>(<span>walker, createfolders)</span>
 </code></dt>
@@ -151,20 +220,20 @@ def fnlister():
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def test_fix(walker, createfolders):
-    walker.transverse(createfolders.strpath, walker.tree)
+    rootfolder = createfolders.strpath
+    walker.transverse(rootfolder, walker.tree)
     fixed = walker.fix(walker.tree)
-    folders = [
-        &#34;&#34;,
-        &#34;&#34;,
-        &#34;\\folder1&#34;,
-        &#34;\\folder2&#34;,
-        &#34;\\folder3&#34;,
-        &#34;\\folder4&#34;,
-        &#34;\\folder4\\subfolder4&#34;,
-    ]
-    for node, count, folder in zip(RenderTree(fixed), [5, 5, 1, 1, 0, 2, 2], folders):
-        assert node.node.__dict__[&#34;leaves&#34;] == count
-        assert node.node.name.replace(createfolders.strpath, &#34;&#34;) == folder</code></pre>
+    folders = {
+        &#39;&#39;: 5,
+        f&#39;{rootfolder}&#39;: 5,
+        f&#39;{rootfolder}{os.sep}folder1&#39;: 1,
+        f&#39;{rootfolder}{os.sep}folder2&#39;: 1,
+        f&#39;{rootfolder}{os.sep}folder3&#39;: 0,
+        f&#39;{rootfolder}{os.sep}folder4&#39;: 2,
+        f&#39;{rootfolder}{os.sep}folder4{os.sep}subfolder4&#39;: 2
+    }
+    for node in RenderTree(fixed):
+        assert folders[node.node.name] == node.node.__dict__[&#34;leaves&#34;]</code></pre>
 </details>
 </dd>
 <dt id="sdr.tests.test_structwalker.test_init_tree"><code class="name flex">
@@ -206,6 +275,18 @@ def walker(fnlister):
     return StructWalker(fnlister)</code></pre>
 </details>
 </dd>
+<dt id="sdr.tests.test_structwalker.walker2"><code class="name flex">
+<span>def <span class="ident">walker2</span></span>(<span>fnlister)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">@pytest.fixture(scope=&#34;function&#34;)
+def walker2(fnlister):
+    return StructWalker(fnlister)</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 <section>
@@ -226,10 +307,13 @@ def walker(fnlister):
 <ul class="">
 <li><code><a title="sdr.tests.test_structwalker.createfolders" href="#sdr.tests.test_structwalker.createfolders">createfolders</a></code></li>
 <li><code><a title="sdr.tests.test_structwalker.fnlister" href="#sdr.tests.test_structwalker.fnlister">fnlister</a></code></li>
+<li><code><a title="sdr.tests.test_structwalker.test_compare_trees" href="#sdr.tests.test_structwalker.test_compare_trees">test_compare_trees</a></code></li>
+<li><code><a title="sdr.tests.test_structwalker.test_convert_to_list" href="#sdr.tests.test_structwalker.test_convert_to_list">test_convert_to_list</a></code></li>
 <li><code><a title="sdr.tests.test_structwalker.test_fix" href="#sdr.tests.test_structwalker.test_fix">test_fix</a></code></li>
 <li><code><a title="sdr.tests.test_structwalker.test_init_tree" href="#sdr.tests.test_structwalker.test_init_tree">test_init_tree</a></code></li>
 <li><code><a title="sdr.tests.test_structwalker.test_transverse_struct" href="#sdr.tests.test_structwalker.test_transverse_struct">test_transverse_struct</a></code></li>
 <li><code><a title="sdr.tests.test_structwalker.walker" href="#sdr.tests.test_structwalker.walker">walker</a></code></li>
+<li><code><a title="sdr.tests.test_structwalker.walker2" href="#sdr.tests.test_structwalker.walker2">walker2</a></code></li>
 </ul>
 </li>
 </ul>

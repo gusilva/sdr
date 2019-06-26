@@ -78,6 +78,7 @@ class StructWalker(object):
         -------
         Node
             Tree structure with the folders as Nodes.
+
         """
         if len(parent.children) == 0:
             return parent
@@ -92,15 +93,46 @@ class StructWalker(object):
 
         return parent
 
-    def compareTrees(self, left_tree: Node, right_tree: Node):
-        tree_1 = []
-        tree_2 = []
 
-        for node in RenderTree(left_tree):
-            tree_1.append(node.node.name)
+    def convertToList(self, tree: Node) -> list:
+        """Convert node tree to a list of all elements.
 
-        for node in RenderTree(right_tree):
-            tree_2.append(node.node.name)
+        Parameters
+        ----------
+        tree: Node
+            Node tree object.
+
+        Returns
+        -------
+        list
+            all node names of a tree.
+
+        """
+        tree_list = []
+        for node in RenderTree(tree):
+            tree_list.append(node.node.name)
+        return tree_list
+
+
+    def compareTrees(self, left_tree: Node, right_tree: Node) -> set:
+        """Compare two tree and retrieve the difference.
+
+        Parameters
+        ----------
+        left_tree: Node
+            Node tree object.
+
+        right_tree: int
+            Node tree object.
+
+        Returns
+        -------
+        set
+            all elements from left tree those are not in right tree.
+
+        """
+        tree_1 = self.convertToList(left_tree)
+        tree_2 = self.convertToList(right_tree)
 
         return set(tree_1).difference(tree_2)
 

@@ -41,7 +41,7 @@ def test_listfolders(rootfolder):
 
     folders, files = f.listFolder(rootfolder.strpath)
     assert len(folders) == 1
-    assert &#34;folder1&#34; == folders[0].split(f&#34;{os.sep}&#34;)[-1]
+    assert f&#39;{rootfolder.strpath}{os.sep}folder1&#39; in folders
     assert len(files) == 1
     assert &#34;file1.txt&#34; == files[0].split(f&#34;{os.sep}&#34;)[-1]
 
@@ -50,8 +50,8 @@ def test_listfolders(rootfolder):
     folders, files = f.listFolder(rootfolder.strpath)
 
     assert len(folders) == 2
-    assert &#34;folder1&#34; == folders[0].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;folder2&#34; == folders[1].split(f&#34;{os.sep}&#34;)[-1]
+    assert f&#39;{rootfolder.strpath}{os.sep}folder1&#39; in folders
+    assert f&#39;{rootfolder.strpath}{os.sep}folder2&#39; in folders
     assert len(files) == 1
     assert &#34;file1.txt&#34; == files[0].split(f&#34;{os.sep}&#34;)[-1]
 
@@ -60,12 +60,12 @@ def test_listfolders(rootfolder):
 
     folders, files = f.listFolder(rootfolder.strpath)
     assert len(folders) == 2
-    assert &#34;folder1&#34; == folders[0].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;folder2&#34; == folders[1].split(f&#34;{os.sep}&#34;)[-1]
+    assert f&#39;{rootfolder.strpath}{os.sep}folder1&#39; in folders
+    assert f&#39;{rootfolder.strpath}{os.sep}folder2&#39; in folders
     assert len(files) == 3
-    assert &#34;file1.txt&#34; == files[0].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;file2.txt&#34; == files[1].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;file3.txt&#34; == files[2].split(f&#34;{os.sep}&#34;)[-1]</code></pre>
+    assert f&#39;{rootfolder.strpath}{os.sep}file1.txt&#39; in files
+    assert f&#39;{rootfolder.strpath}{os.sep}file2.txt&#39; in files
+    assert f&#39;{rootfolder.strpath}{os.sep}file3.txt&#39; in files</code></pre>
 </details>
 </section>
 <section>
@@ -104,7 +104,7 @@ def rootfolder(tmpdir_factory):
 
     folders, files = f.listFolder(rootfolder.strpath)
     assert len(folders) == 1
-    assert &#34;folder1&#34; == folders[0].split(f&#34;{os.sep}&#34;)[-1]
+    assert f&#39;{rootfolder.strpath}{os.sep}folder1&#39; in folders
     assert len(files) == 1
     assert &#34;file1.txt&#34; == files[0].split(f&#34;{os.sep}&#34;)[-1]
 
@@ -113,8 +113,8 @@ def rootfolder(tmpdir_factory):
     folders, files = f.listFolder(rootfolder.strpath)
 
     assert len(folders) == 2
-    assert &#34;folder1&#34; == folders[0].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;folder2&#34; == folders[1].split(f&#34;{os.sep}&#34;)[-1]
+    assert f&#39;{rootfolder.strpath}{os.sep}folder1&#39; in folders
+    assert f&#39;{rootfolder.strpath}{os.sep}folder2&#39; in folders
     assert len(files) == 1
     assert &#34;file1.txt&#34; == files[0].split(f&#34;{os.sep}&#34;)[-1]
 
@@ -123,12 +123,12 @@ def rootfolder(tmpdir_factory):
 
     folders, files = f.listFolder(rootfolder.strpath)
     assert len(folders) == 2
-    assert &#34;folder1&#34; == folders[0].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;folder2&#34; == folders[1].split(f&#34;{os.sep}&#34;)[-1]
+    assert f&#39;{rootfolder.strpath}{os.sep}folder1&#39; in folders
+    assert f&#39;{rootfolder.strpath}{os.sep}folder2&#39; in folders
     assert len(files) == 3
-    assert &#34;file1.txt&#34; == files[0].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;file2.txt&#34; == files[1].split(f&#34;{os.sep}&#34;)[-1]
-    assert &#34;file3.txt&#34; == files[2].split(f&#34;{os.sep}&#34;)[-1]</code></pre>
+    assert f&#39;{rootfolder.strpath}{os.sep}file1.txt&#39; in files
+    assert f&#39;{rootfolder.strpath}{os.sep}file2.txt&#39; in files
+    assert f&#39;{rootfolder.strpath}{os.sep}file3.txt&#39; in files</code></pre>
 </details>
 </dd>
 </dl>

@@ -102,6 +102,7 @@ class StructWalker(object):
         -------
         Node
             Tree structure with the folders as Nodes.
+
         &#34;&#34;&#34;
         if len(parent.children) == 0:
             return parent
@@ -114,7 +115,50 @@ class StructWalker(object):
                 if node.depth &lt;= 2:
                     parent.__dict__[&#34;leaves&#34;] = count
 
-        return parent</code></pre>
+        return parent
+
+
+    def convertToList(self, tree: Node) -&gt; list:
+        &#34;&#34;&#34;Convert node tree to a list of all elements.
+
+        Parameters
+        ----------
+        tree: Node
+            Node tree object.
+
+        Returns
+        -------
+        list
+            all node names of a tree.
+
+        &#34;&#34;&#34;
+        tree_list = []
+        for node in RenderTree(tree):
+            tree_list.append(node.node.name)
+        return tree_list
+
+
+    def compareTrees(self, left_tree: Node, right_tree: Node) -&gt; set:
+        &#34;&#34;&#34;Compare two tree and retrieve the difference.
+
+        Parameters
+        ----------
+        left_tree: Node
+            Node tree object.
+
+        right_tree: int
+            Node tree object.
+
+        Returns
+        -------
+        set
+            all elements from left tree those are not in right tree.
+
+        &#34;&#34;&#34;
+        tree_1 = self.convertToList(left_tree)
+        tree_2 = self.convertToList(right_tree)
+
+        return set(tree_1).difference(tree_2)</code></pre>
 </details>
 </section>
 <section>
@@ -221,6 +265,7 @@ and files.</dd>
         -------
         Node
             Tree structure with the folders as Nodes.
+
         &#34;&#34;&#34;
         if len(parent.children) == 0:
             return parent
@@ -233,10 +278,132 @@ and files.</dd>
                 if node.depth &lt;= 2:
                     parent.__dict__[&#34;leaves&#34;] = count
 
-        return parent</code></pre>
+        return parent
+
+
+    def convertToList(self, tree: Node) -&gt; list:
+        &#34;&#34;&#34;Convert node tree to a list of all elements.
+
+        Parameters
+        ----------
+        tree: Node
+            Node tree object.
+
+        Returns
+        -------
+        list
+            all node names of a tree.
+
+        &#34;&#34;&#34;
+        tree_list = []
+        for node in RenderTree(tree):
+            tree_list.append(node.node.name)
+        return tree_list
+
+
+    def compareTrees(self, left_tree: Node, right_tree: Node) -&gt; set:
+        &#34;&#34;&#34;Compare two tree and retrieve the difference.
+
+        Parameters
+        ----------
+        left_tree: Node
+            Node tree object.
+
+        right_tree: int
+            Node tree object.
+
+        Returns
+        -------
+        set
+            all elements from left tree those are not in right tree.
+
+        &#34;&#34;&#34;
+        tree_1 = self.convertToList(left_tree)
+        tree_2 = self.convertToList(right_tree)
+
+        return set(tree_1).difference(tree_2)</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="sdr.src.service.structwalker.StructWalker.compareTrees"><code class="name flex">
+<span>def <span class="ident">compareTrees</span></span>(<span>self, left_tree, right_tree)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Compare two tree and retrieve the difference.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>left_tree</code></strong> :&ensp;<code>Node</code></dt>
+<dd>Node tree object.</dd>
+<dt><strong><code>right_tree</code></strong> :&ensp;<code>int</code></dt>
+<dd>Node tree object.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>set</code></dt>
+<dd>all elements from left tree those are not in right tree.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def compareTrees(self, left_tree: Node, right_tree: Node) -&gt; set:
+    &#34;&#34;&#34;Compare two tree and retrieve the difference.
+
+    Parameters
+    ----------
+    left_tree: Node
+        Node tree object.
+
+    right_tree: int
+        Node tree object.
+
+    Returns
+    -------
+    set
+        all elements from left tree those are not in right tree.
+
+    &#34;&#34;&#34;
+    tree_1 = self.convertToList(left_tree)
+    tree_2 = self.convertToList(right_tree)
+
+    return set(tree_1).difference(tree_2)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.service.structwalker.StructWalker.convertToList"><code class="name flex">
+<span>def <span class="ident">convertToList</span></span>(<span>self, tree)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Convert node tree to a list of all elements.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>tree</code></strong> :&ensp;<code>Node</code></dt>
+<dd>Node tree object.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>all node names of a tree.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def convertToList(self, tree: Node) -&gt; list:
+    &#34;&#34;&#34;Convert node tree to a list of all elements.
+
+    Parameters
+    ----------
+    tree: Node
+        Node tree object.
+
+    Returns
+    -------
+    list
+        all node names of a tree.
+
+    &#34;&#34;&#34;
+    tree_list = []
+    for node in RenderTree(tree):
+        tree_list.append(node.node.name)
+    return tree_list</code></pre>
+</details>
+</dd>
 <dt id="sdr.src.service.structwalker.StructWalker.fix"><code class="name flex">
 <span>def <span class="ident">fix</span></span>(<span>self, parent, count=0)</span>
 </code></dt>
@@ -271,6 +438,7 @@ and files.</dd>
     -------
     Node
         Tree structure with the folders as Nodes.
+
     &#34;&#34;&#34;
     if len(parent.children) == 0:
         return parent
@@ -364,6 +532,8 @@ and files.</dd>
 <li>
 <h4><code><a title="sdr.src.service.structwalker.StructWalker" href="#sdr.src.service.structwalker.StructWalker">StructWalker</a></code></h4>
 <ul class="">
+<li><code><a title="sdr.src.service.structwalker.StructWalker.compareTrees" href="#sdr.src.service.structwalker.StructWalker.compareTrees">compareTrees</a></code></li>
+<li><code><a title="sdr.src.service.structwalker.StructWalker.convertToList" href="#sdr.src.service.structwalker.StructWalker.convertToList">convertToList</a></code></li>
 <li><code><a title="sdr.src.service.structwalker.StructWalker.fix" href="#sdr.src.service.structwalker.StructWalker.fix">fix</a></code></li>
 <li><code><a title="sdr.src.service.structwalker.StructWalker.transverse" href="#sdr.src.service.structwalker.StructWalker.transverse">transverse</a></code></li>
 </ul>

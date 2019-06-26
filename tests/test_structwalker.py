@@ -72,6 +72,19 @@ def test_fix(walker, createfolders):
     for node in RenderTree(fixed):
         assert folders[node.node.name] == node.node.__dict__["leaves"]
 
+def test_convert_to_list(walker, createfolders):
+    expected = [
+        '', 
+        f'{createfolders.strpath}', 
+        f'{createfolders.strpath}{os.sep}folder2', 
+        f'{createfolders.strpath}{os.sep}folder3', 
+        f'{createfolders.strpath}{os.sep}folder4', 
+        f'{createfolders.strpath}{os.sep}folder4{os.sep}subfolder4', 
+        f'{createfolders.strpath}{os.sep}folder1'
+    ]
+    walker.transverse(createfolders.strpath, walker.tree)
+    assert expected == walker.convertToList(walker.tree)
+
 
 def test_compare_trees(walker, walker2, createfolders):
     walker.transverse(createfolders.strpath, walker.tree)
@@ -82,11 +95,4 @@ def test_compare_trees(walker, walker2, createfolders):
     walker2.transverse(createfolders.strpath, walker2.tree)
     tree2 = walker2.tree
 
-    # for f,i,node in RenderTree(tree1):
-    #     print(node.name)
-
-    # for f,i,node in RenderTree(tree2):
-    #     print(node.name)
-    print(os.path.abspath(createfolders.strpath+os.sep+'folder5'))
-    print(walker.compareTrees(tree2, tree1))
-    # assert '\\rootfolder2\\folder5' in walker.compareTrees(tree1, tree2)
+    assert os.path.abspath(createfolders.strpath+os.sep+'folder5') in walker.compareTrees(tree2, tree1)
