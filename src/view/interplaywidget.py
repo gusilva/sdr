@@ -94,17 +94,17 @@ class InterplayWidget(QTreeView):
 
         """
         self.setEnabled(False)
-        wsapi = WSApi(pam_source, watch_folder, username, password)
-        wsapi.setClient(wsl_pam)
-        walker = StructWalker(wsapi)
-        walker.tree = Node(watch_folder, leaves=0)
+        self.wsapi = WSApi(pam_source, watch_folder, username, password)
+        self.wsapi.setClient(wsl_pam)
+        self.walker = StructWalker(self.wsapi)
+        self.walker.tree = Node(watch_folder, leaves=0)
         self.model.removeRows(0, self.model.rowCount())
 
-        walker.counter = []
-        walker.tree = Node(pam_source, leaves=0)
+        self.walker.counter = []
+        self.walker.tree = Node(pam_source, leaves=0)
 
         self.worker = WorkerThread()
-        self.worker.setWalker(watch_folder, walker)
+        self.worker.setWalker(watch_folder, self.walker)
         self.thread = QThread()
         self.thread.started.connect(self.worker.run)
         self.thread.finished.connect(self.onFinished)
@@ -163,3 +163,4 @@ class InterplayWidget(QTreeView):
                 [QStandardItem(value["name"]), QStandardItem(str(value["leaves"]))]
             )
             seen[dbid] = parent.child(parent.rowCount() - 1)
+

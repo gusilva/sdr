@@ -4,7 +4,6 @@ import datetime
 
 Base = declarative_base()
 
-
 class Settings(Base):
     """
     Product setting class for db table.
@@ -106,3 +105,35 @@ class Report(Base):
     pam_source_count = Column(Integer)
     pam_destination_count = Column(Integer)
     report_date = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
+
+class FolderTracking(Base):
+    """
+    Tracking folders table.
+
+    Attributes
+    ----------
+    __tablename__ : str
+        foldertracking table name.
+    
+    id : Integer
+        folder tracking id.
+
+    settings_id : Integer
+        foreign key for the setting id.
+
+    pam_source_missing_count : Integer
+        production asset management source missing count.
+
+    pam_destination_missing_count: Integer
+        production asset management destination missing count.
+
+    created_date : DateTime
+        creation date.
+    
+    """
+    __tablename__ = "foldertracking"
+    id = Column(Integer, primary_key=True)
+    settings_id = Column(Integer, ForeignKey("settings.id"))
+    pam_source_missing_count = Column(Integer)
+    pam_destination_missing_count = Column(Integer)
+    created_date = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)

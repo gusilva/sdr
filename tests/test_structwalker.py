@@ -73,17 +73,16 @@ def test_fix(walker, createfolders):
         assert folders[node.node.name] == node.node.__dict__["leaves"]
 
 def test_convert_to_list(walker, createfolders):
-    expected = [
-        '', 
+    expected = {
         f'{createfolders.strpath}', 
         f'{createfolders.strpath}{os.sep}folder2', 
         f'{createfolders.strpath}{os.sep}folder3', 
         f'{createfolders.strpath}{os.sep}folder4', 
         f'{createfolders.strpath}{os.sep}folder4{os.sep}subfolder4', 
         f'{createfolders.strpath}{os.sep}folder1'
-    ]
+    }
     walker.transverse(createfolders.strpath, walker.tree)
-    assert expected == walker.convertToList(walker.tree)
+    assert expected == set(walker.convertToList(walker.tree))
 
 
 def test_compare_trees(walker, walker2, createfolders):

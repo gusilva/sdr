@@ -1,4 +1,4 @@
-from src.model.model import Base, Settings, Report
+from src.model.model import Base, Settings, Report, FolderTracking
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from datetime import datetime
@@ -70,3 +70,16 @@ class Controller(object):
         report = Report(**data)
         self.session.add(report)
         self.session.commit()
+
+    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int):
+        dt = datetime.now()
+        data = {
+            "settings_id": productid,
+            "pam_source_missing_count": pam_source_missing_count,
+            "pam_destination_missing_count": pam_destination_missing_count,
+            "created_date": dt
+        }
+        tracking = FolderTracking(**data)
+        self.session.add(tracking)
+        self.session.commit()
+

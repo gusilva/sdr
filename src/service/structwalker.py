@@ -110,6 +110,8 @@ class StructWalker(object):
         """
         tree_list = []
         for node in RenderTree(tree):
+            if node.node.is_root:
+                continue
             tree_list.append(node.node.name)
         return tree_list
 

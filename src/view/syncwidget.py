@@ -19,6 +19,8 @@ from src.service.exceptions import WSApiException
 from src.view.interplaywidget import InterplayWidget
 
 
+from PyQt5.QtGui import QColor
+
 class SyncWidget(QWidget):
     """
     Sync ui with the interplay tree widgets.
@@ -283,7 +285,34 @@ class SyncWidget(QWidget):
 
         """
         if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
+            self.getMissingFolders()
             self.updateBtn.setEnabled(True)
+            self.interplayTreeView.threadfinished = False
+            self.sdrTreeView.threadfinished = False
+
+    def setColorNotOldThan(self, days, mainfolder, dif, color, pam_obj):
+        import datetime
+        t1 = datetime.datetime.now(datetime.timezone.utc)
+        for i in dif:
+            r = i.replace(mainfolder, "")
+            t2 = pam_obj.wsapi.getAssetDate(i)
+            tdelta = t1 - t2
+            if tdelta.days >= days:
+                h = pam_obj.model.findItems(r, Qt.MatchRecursive)
+                h[0].setBackground(QColor(color))
+
+    def getMissingFolders(self):
+        pam_source_tree = self.interplayTreeView.walker.tree
+        pam_destination_tree = self.sdrTreeView.walker.tree
+        dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
+        dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
+        watch_folder = self.watchFolderLineEdit.text().split('/')
+        watch_folder.pop(-1)
+        watch_folder = '/'.join(watch_folder)
+        self.setColorNotOldThan(2, watch_folder, dif, 'red', self.interplayTreeView)
+        self.setColorNotOldThan(2, watch_folder, dif_sdr, 'yellow', self.sdrTreeView)
+
+
 
 
 if __name__ == "__main__":

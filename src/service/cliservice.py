@@ -91,3 +91,25 @@ class CliService(object):
                 walker_pam_source.tree.__dict__["leaves"],
                 walker_pam_destination.tree.__dict__["leaves"],
             )
+
+            print("getting diffs")
+            dif1 = walker_pam_source.compareTrees(walker_pam_source.tree, walker_pam_destination.tree)
+            dif2 = walker_pam_destination.compareTrees(walker_pam_destination.tree, walker_pam_source.tree)
+
+            print("saving")
+            d1 = self.checkFolderAge(dif1, wsapi_pam_source, 2)
+            d2 = self.checkFolderAge(dif2, wsapi_pam_destination, 2)
+            self.controller.saveFolders(setting["id"], len(d1), len(d2))
+
+    def checkFolderAge(self, folders, wsapi, days):
+        import datetime
+        data = []
+        t1 = datetime.datetime.now(datetime.timezone.utc)
+        for folder in folders:
+            t2 = wsapi.getAssetDate(folder)
+            tdelta = t1 - t2
+            if tdelta.days >= days:
+                data.append(folder)
+        return data
+
+
