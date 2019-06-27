@@ -36,11 +36,16 @@
     QSizePolicy,
 )
 from PyQt5.QtCore import QSettings, QCoreApplication, Qt, QMetaObject
+from PyQt5.QtGui import QColor
+from datetime import datetime, timezone
 from collections import deque
 from src.service.structwalker import StructWalker
 from src.service.wsapiservice import WSApi
 from src.service.exceptions import WSApiException
 from src.view.interplaywidget import InterplayWidget
+
+
+
 
 
 class SyncWidget(QWidget):
@@ -307,7 +312,55 @@ class SyncWidget(QWidget):
 
         &#34;&#34;&#34;
         if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
+            self.getMissingFolders()
             self.updateBtn.setEnabled(True)
+            self.interplayTreeView.threadfinished = False
+            self.sdrTreeView.threadfinished = False
+
+    def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -&gt; None:
+        &#34;&#34;&#34;Set tree items color to items older than days.
+
+        Parameters
+        ----------
+        days : int
+            days that the folder has not been modified.
+
+        mainfolder : str
+            root path.
+
+        dif : set
+            set of folders that differs from another tree structure.
+
+        color : str
+            color to mark down.
+
+        pam_obj : InterplayWidget
+            interplay widget object.
+
+        &#34;&#34;&#34;        
+        t1 = datetime.now(timezone.utc)
+        for i in dif:
+            r = i.replace(mainfolder, &#34;&#34;)
+            t2 = pam_obj.wsapi.getAssetDate(i)
+            tdelta = t1 - t2
+            if tdelta.days &gt;= days:
+                h = pam_obj.model.findItems(r, Qt.MatchRecursive)
+                h[0].setBackground(QColor(color))
+
+    def getMissingFolders(self) -&gt; None:
+        &#34;&#34;&#34;Get missing folders and set item colors.
+
+        &#34;&#34;&#34; 
+        pam_source_tree = self.interplayTreeView.walker.tree
+        pam_destination_tree = self.sdrTreeView.walker.tree
+        dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
+        dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
+        watch_folder = self.watchFolderLineEdit.text().split(&#39;/&#39;)
+        watch_folder.pop(-1)
+        watch_folder = &#39;/&#39;.join(watch_folder)
+        self.setColorNotOldThan(2, watch_folder, dif, &#39;red&#39;, self.interplayTreeView)
+        self.setColorNotOldThan(2, watch_folder, dif_sdr, &#39;yellow&#39;, self.sdrTreeView)
+
 
 
 if __name__ == &#34;__main__&#34;:
@@ -644,7 +697,54 @@ enable the update button.</p>
 
         &#34;&#34;&#34;
         if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
-            self.updateBtn.setEnabled(True)</code></pre>
+            self.getMissingFolders()
+            self.updateBtn.setEnabled(True)
+            self.interplayTreeView.threadfinished = False
+            self.sdrTreeView.threadfinished = False
+
+    def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -&gt; None:
+        &#34;&#34;&#34;Set tree items color to items older than days.
+
+        Parameters
+        ----------
+        days : int
+            days that the folder has not been modified.
+
+        mainfolder : str
+            root path.
+
+        dif : set
+            set of folders that differs from another tree structure.
+
+        color : str
+            color to mark down.
+
+        pam_obj : InterplayWidget
+            interplay widget object.
+
+        &#34;&#34;&#34;        
+        t1 = datetime.now(timezone.utc)
+        for i in dif:
+            r = i.replace(mainfolder, &#34;&#34;)
+            t2 = pam_obj.wsapi.getAssetDate(i)
+            tdelta = t1 - t2
+            if tdelta.days &gt;= days:
+                h = pam_obj.model.findItems(r, Qt.MatchRecursive)
+                h[0].setBackground(QColor(color))
+
+    def getMissingFolders(self) -&gt; None:
+        &#34;&#34;&#34;Get missing folders and set item colors.
+
+        &#34;&#34;&#34; 
+        pam_source_tree = self.interplayTreeView.walker.tree
+        pam_destination_tree = self.sdrTreeView.walker.tree
+        dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
+        dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
+        watch_folder = self.watchFolderLineEdit.text().split(&#39;/&#39;)
+        watch_folder.pop(-1)
+        watch_folder = &#39;/&#39;.join(watch_folder)
+        self.setColorNotOldThan(2, watch_folder, dif, &#39;red&#39;, self.interplayTreeView)
+        self.setColorNotOldThan(2, watch_folder, dif_sdr, &#39;yellow&#39;, self.sdrTreeView)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -746,6 +846,28 @@ enable the update button.</p>
     self.tabWidget.addTab(self.settingsTab, &#34;&#34;)</code></pre>
 </details>
 </dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.getMissingFolders"><code class="name flex">
+<span>def <span class="ident">getMissingFolders</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get missing folders and set item colors.</p></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def getMissingFolders(self) -&gt; None:
+    &#34;&#34;&#34;Get missing folders and set item colors.
+
+    &#34;&#34;&#34; 
+    pam_source_tree = self.interplayTreeView.walker.tree
+    pam_destination_tree = self.sdrTreeView.walker.tree
+    dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
+    dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
+    watch_folder = self.watchFolderLineEdit.text().split(&#39;/&#39;)
+    watch_folder.pop(-1)
+    watch_folder = &#39;/&#39;.join(watch_folder)
+    self.setColorNotOldThan(2, watch_folder, dif, &#39;red&#39;, self.interplayTreeView)
+    self.setColorNotOldThan(2, watch_folder, dif_sdr, &#39;yellow&#39;, self.sdrTreeView)</code></pre>
+</details>
+</dd>
 <dt id="sdr.src.view.syncwidget.SyncWidget.onFinished"><code class="name flex">
 <span>def <span class="ident">onFinished</span></span>(<span>self)</span>
 </code></dt>
@@ -759,7 +881,10 @@ enable the update button.</p>
 
     &#34;&#34;&#34;
     if self.interplayTreeView.threadfinished and self.sdrTreeView.threadfinished:
-        self.updateBtn.setEnabled(True)</code></pre>
+        self.getMissingFolders()
+        self.updateBtn.setEnabled(True)
+        self.interplayTreeView.threadfinished = False
+        self.sdrTreeView.threadfinished = False</code></pre>
 </details>
 </dd>
 <dt id="sdr.src.view.syncwidget.SyncWidget.retranslateUi"><code class="name flex">
@@ -820,6 +945,57 @@ enable the update button.</p>
     self.config.setValue(&#34;mainapp&#34;, self.settings)
     self.config.sync()
     self.status(&#34;Settings have been saved.&#34;)</code></pre>
+</details>
+</dd>
+<dt id="sdr.src.view.syncwidget.SyncWidget.setColorNotOldThan"><code class="name flex">
+<span>def <span class="ident">setColorNotOldThan</span></span>(<span>self, days, mainfolder, dif, color, pam_obj)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Set tree items color to items older than days.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>days</code></strong> :&ensp;<code>int</code></dt>
+<dd>days that the folder has not been modified.</dd>
+<dt><strong><code>mainfolder</code></strong> :&ensp;<code>str</code></dt>
+<dd>root path.</dd>
+<dt><strong><code>dif</code></strong> :&ensp;<code>set</code></dt>
+<dd>set of folders that differs from another tree structure.</dd>
+<dt><strong><code>color</code></strong> :&ensp;<code>str</code></dt>
+<dd>color to mark down.</dd>
+<dt><strong><code>pam_obj</code></strong> :&ensp;<code>InterplayWidget</code></dt>
+<dd>interplay widget object.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -&gt; None:
+    &#34;&#34;&#34;Set tree items color to items older than days.
+
+    Parameters
+    ----------
+    days : int
+        days that the folder has not been modified.
+
+    mainfolder : str
+        root path.
+
+    dif : set
+        set of folders that differs from another tree structure.
+
+    color : str
+        color to mark down.
+
+    pam_obj : InterplayWidget
+        interplay widget object.
+
+    &#34;&#34;&#34;        
+    t1 = datetime.now(timezone.utc)
+    for i in dif:
+        r = i.replace(mainfolder, &#34;&#34;)
+        t2 = pam_obj.wsapi.getAssetDate(i)
+        tdelta = t1 - t2
+        if tdelta.days &gt;= days:
+            h = pam_obj.model.findItems(r, Qt.MatchRecursive)
+            h[0].setBackground(QColor(color))</code></pre>
 </details>
 </dd>
 <dt id="sdr.src.view.syncwidget.SyncWidget.setConfigs"><code class="name flex">
@@ -946,9 +1122,11 @@ enable the update button.</p>
 <ul class="two-column">
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.addAssetTab" href="#sdr.src.view.syncwidget.SyncWidget.addAssetTab">addAssetTab</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.addSettingTab" href="#sdr.src.view.syncwidget.SyncWidget.addSettingTab">addSettingTab</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.getMissingFolders" href="#sdr.src.view.syncwidget.SyncWidget.getMissingFolders">getMissingFolders</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.onFinished" href="#sdr.src.view.syncwidget.SyncWidget.onFinished">onFinished</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.retranslateUi" href="#sdr.src.view.syncwidget.SyncWidget.retranslateUi">retranslateUi</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.saveConfig" href="#sdr.src.view.syncwidget.SyncWidget.saveConfig">saveConfig</a></code></li>
+<li><code><a title="sdr.src.view.syncwidget.SyncWidget.setColorNotOldThan" href="#sdr.src.view.syncwidget.SyncWidget.setColorNotOldThan">setColorNotOldThan</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.setConfigs" href="#sdr.src.view.syncwidget.SyncWidget.setConfigs">setConfigs</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.status" href="#sdr.src.view.syncwidget.SyncWidget.status">status</a></code></li>
 <li><code><a title="sdr.src.view.syncwidget.SyncWidget.update" href="#sdr.src.view.syncwidget.SyncWidget.update">update</a></code></li>

@@ -12,6 +12,8 @@ from PyQt5.QtWidgets import (
     QSizePolicy,
 )
 from PyQt5.QtCore import QSettings, QCoreApplication, Qt, QMetaObject
+from PyQt5.QtGui import QColor
+from datetime import datetime, timezone
 from collections import deque
 from src.service.structwalker import StructWalker
 from src.service.wsapiservice import WSApi
@@ -19,7 +21,8 @@ from src.service.exceptions import WSApiException
 from src.view.interplaywidget import InterplayWidget
 
 
-from PyQt5.QtGui import QColor
+
+
 
 class SyncWidget(QWidget):
     """
@@ -290,9 +293,28 @@ class SyncWidget(QWidget):
             self.interplayTreeView.threadfinished = False
             self.sdrTreeView.threadfinished = False
 
-    def setColorNotOldThan(self, days, mainfolder, dif, color, pam_obj):
-        import datetime
-        t1 = datetime.datetime.now(datetime.timezone.utc)
+    def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -> None:
+        """Set tree items color to items older than days.
+
+        Parameters
+        ----------
+        days : int
+            days that the folder has not been modified.
+
+        mainfolder : str
+            root path.
+
+        dif : set
+            set of folders that differs from another tree structure.
+
+        color : str
+            color to mark down.
+
+        pam_obj : InterplayWidget
+            interplay widget object.
+
+        """        
+        t1 = datetime.now(timezone.utc)
         for i in dif:
             r = i.replace(mainfolder, "")
             t2 = pam_obj.wsapi.getAssetDate(i)
@@ -301,7 +323,10 @@ class SyncWidget(QWidget):
                 h = pam_obj.model.findItems(r, Qt.MatchRecursive)
                 h[0].setBackground(QColor(color))
 
-    def getMissingFolders(self):
+    def getMissingFolders(self) -> None:
+        """Get missing folders and set item colors.
+
+        """ 
         pam_source_tree = self.interplayTreeView.walker.tree
         pam_destination_tree = self.sdrTreeView.walker.tree
         dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
@@ -311,7 +336,6 @@ class SyncWidget(QWidget):
         watch_folder = '/'.join(watch_folder)
         self.setColorNotOldThan(2, watch_folder, dif, 'red', self.interplayTreeView)
         self.setColorNotOldThan(2, watch_folder, dif_sdr, 'yellow', self.sdrTreeView)
-
 
 
 

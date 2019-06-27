@@ -2,6 +2,7 @@ from src.controller.dbcontroller import Controller
 from sqlalchemy import create_engine
 from src.service.structwalker import StructWalker
 from src.service.wsapiservice import WSApi
+from datetime import datetime, timezone
 
 
 class CliService(object):
@@ -101,10 +102,29 @@ class CliService(object):
             d2 = self.checkFolderAge(dif2, wsapi_pam_destination, 2)
             self.controller.saveFolders(setting["id"], len(d1), len(d2))
 
-    def checkFolderAge(self, folders, wsapi, days):
+    def checkFolderAge(self, folders: str, wsapi: WSApi, days: int) -> list:
+        """Check folder age.
+
+        Parameters
+        ----------
+        folders : str
+            set of folders path.
+
+        wsapi : WSApi
+            Webservice api object.
+
+        days : int
+            days that the folder has not been modified.
+
+        Returns
+        -------
+        list
+            all folder that are old than days number.
+
+        """
         import datetime
         data = []
-        t1 = datetime.datetime.now(datetime.timezone.utc)
+        t1 = datetime.now(timezone.utc)
         for folder in folders:
             t2 = wsapi.getAssetDate(folder)
             tdelta = t1 - t2

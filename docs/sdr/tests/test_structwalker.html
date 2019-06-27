@@ -97,17 +97,16 @@ def test_fix(walker, createfolders):
         assert folders[node.node.name] == node.node.__dict__[&#34;leaves&#34;]
 
 def test_convert_to_list(walker, createfolders):
-    expected = [
-        &#39;&#39;, 
+    expected = {
         f&#39;{createfolders.strpath}&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder2&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder3&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder4&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder4{os.sep}subfolder4&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder1&#39;
-    ]
+    }
     walker.transverse(createfolders.strpath, walker.tree)
-    assert expected == walker.convertToList(walker.tree)
+    assert expected == set(walker.convertToList(walker.tree))
 
 
 def test_compare_trees(walker, walker2, createfolders):
@@ -199,17 +198,16 @@ def fnlister():
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def test_convert_to_list(walker, createfolders):
-    expected = [
-        &#39;&#39;, 
+    expected = {
         f&#39;{createfolders.strpath}&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder2&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder3&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder4&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder4{os.sep}subfolder4&#39;, 
         f&#39;{createfolders.strpath}{os.sep}folder1&#39;
-    ]
+    }
     walker.transverse(createfolders.strpath, walker.tree)
-    assert expected == walker.convertToList(walker.tree)</code></pre>
+    assert expected == set(walker.convertToList(walker.tree))</code></pre>
 </details>
 </dd>
 <dt id="sdr.tests.test_structwalker.test_fix"><code class="name flex">

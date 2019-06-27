@@ -71,7 +71,21 @@ class Controller(object):
         self.session.add(report)
         self.session.commit()
 
-    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int):
+    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -> None:
+        """Save tracking folders count to foldertracking table.
+
+        Parameters
+        ----------
+        productid : int
+            product setting id.
+
+        pam_source_missing_count: int
+            production asset management source missing count.
+
+        pam_destination_missing_count: int
+            production asset management destination missing count.
+            
+        """
         dt = datetime.now()
         data = {
             "settings_id": productid,

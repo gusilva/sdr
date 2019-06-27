@@ -134,6 +134,8 @@ class StructWalker(object):
         &#34;&#34;&#34;
         tree_list = []
         for node in RenderTree(tree):
+            if node.node.is_root:
+                continue
             tree_list.append(node.node.name)
         return tree_list
 
@@ -297,6 +299,8 @@ and files.</dd>
         &#34;&#34;&#34;
         tree_list = []
         for node in RenderTree(tree):
+            if node.node.is_root:
+                continue
             tree_list.append(node.node.name)
         return tree_list
 
@@ -400,6 +404,8 @@ and files.</dd>
     &#34;&#34;&#34;
     tree_list = []
     for node in RenderTree(tree):
+        if node.node.is_root:
+            continue
         tree_list.append(node.node.name)
     return tree_list</code></pre>
 </details>

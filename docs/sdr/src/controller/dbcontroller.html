@@ -22,7 +22,7 @@
 <section id="section-intro">
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">from src.model.model import Base, Settings, Report
+<pre><code class="python">from src.model.model import Base, Settings, Report, FolderTracking
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 from datetime import datetime
@@ -93,6 +93,32 @@ class Controller(object):
 
         report = Report(**data)
         self.session.add(report)
+        self.session.commit()
+
+    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -&gt; None:
+        &#34;&#34;&#34;Save tracking folders count to foldertracking table.
+
+        Parameters
+        ----------
+        productid : int
+            product setting id.
+
+        pam_source_missing_count: int
+            production asset management source missing count.
+
+        pam_destination_missing_count: int
+            production asset management destination missing count.
+            
+        &#34;&#34;&#34;
+        dt = datetime.now()
+        data = {
+            &#34;settings_id&#34;: productid,
+            &#34;pam_source_missing_count&#34;: pam_source_missing_count,
+            &#34;pam_destination_missing_count&#34;: pam_destination_missing_count,
+            &#34;created_date&#34;: dt
+        }
+        tracking = FolderTracking(**data)
+        self.session.add(tracking)
         self.session.commit()</code></pre>
 </details>
 </section>
@@ -188,6 +214,32 @@ save report data to daily report db table.</p>
 
         report = Report(**data)
         self.session.add(report)
+        self.session.commit()
+
+    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -&gt; None:
+        &#34;&#34;&#34;Save tracking folders count to foldertracking table.
+
+        Parameters
+        ----------
+        productid : int
+            product setting id.
+
+        pam_source_missing_count: int
+            production asset management source missing count.
+
+        pam_destination_missing_count: int
+            production asset management destination missing count.
+            
+        &#34;&#34;&#34;
+        dt = datetime.now()
+        data = {
+            &#34;settings_id&#34;: productid,
+            &#34;pam_source_missing_count&#34;: pam_source_missing_count,
+            &#34;pam_destination_missing_count&#34;: pam_destination_missing_count,
+            &#34;created_date&#34;: dt
+        }
+        tracking = FolderTracking(**data)
+        self.session.add(tracking)
         self.session.commit()</code></pre>
 </details>
 <h3>Methods</h3>
@@ -263,6 +315,49 @@ save report data to daily report db table.</p>
     self.session.commit()</code></pre>
 </details>
 </dd>
+<dt id="sdr.src.controller.dbcontroller.Controller.saveFolders"><code class="name flex">
+<span>def <span class="ident">saveFolders</span></span>(<span>self, productid, pam_source_missing_count, pam_destination_missing_count)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Save tracking folders count to foldertracking table.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>productid</code></strong> :&ensp;<code>int</code></dt>
+<dd>product setting id.</dd>
+<dt><strong><code>pam_source_missing_count</code></strong> :&ensp;<code>int</code></dt>
+<dd>production asset management source missing count.</dd>
+<dt><strong><code>pam_destination_missing_count</code></strong> :&ensp;<code>int</code></dt>
+<dd>production asset management destination missing count.</dd>
+</dl></section>
+<details class="source">
+<summary>Source code</summary>
+<pre><code class="python">def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -&gt; None:
+    &#34;&#34;&#34;Save tracking folders count to foldertracking table.
+
+    Parameters
+    ----------
+    productid : int
+        product setting id.
+
+    pam_source_missing_count: int
+        production asset management source missing count.
+
+    pam_destination_missing_count: int
+        production asset management destination missing count.
+        
+    &#34;&#34;&#34;
+    dt = datetime.now()
+    data = {
+        &#34;settings_id&#34;: productid,
+        &#34;pam_source_missing_count&#34;: pam_source_missing_count,
+        &#34;pam_destination_missing_count&#34;: pam_destination_missing_count,
+        &#34;created_date&#34;: dt
+    }
+    tracking = FolderTracking(**data)
+    self.session.add(tracking)
+    self.session.commit()</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -286,6 +381,7 @@ save report data to daily report db table.</p>
 <ul class="">
 <li><code><a title="sdr.src.controller.dbcontroller.Controller.getActiveProductSettings" href="#sdr.src.controller.dbcontroller.Controller.getActiveProductSettings">getActiveProductSettings</a></code></li>
 <li><code><a title="sdr.src.controller.dbcontroller.Controller.save" href="#sdr.src.controller.dbcontroller.Controller.save">save</a></code></li>
+<li><code><a title="sdr.src.controller.dbcontroller.Controller.saveFolders" href="#sdr.src.controller.dbcontroller.Controller.saveFolders">saveFolders</a></code></li>
 </ul>
 </li>
 </ul>
