@@ -93,7 +93,6 @@ class StructWalker(object):
 
         return parent
 
-
     def convertToList(self, tree: Node) -> list:
         """Convert node tree to a list of all elements.
 
@@ -114,7 +113,6 @@ class StructWalker(object):
                 continue
             tree_list.append(node.node.name)
         return tree_list
-
 
     def compareTrees(self, left_tree: Node, right_tree: Node) -> set:
         """Compare two tree and retrieve the difference.
@@ -137,4 +135,3 @@ class StructWalker(object):
         tree_2 = self.convertToList(right_tree)
 
         return set(tree_1).difference(tree_2)
-

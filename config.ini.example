@@ -1,0 +1,13 @@
+[DEFAULT]
+sdrjb = sdr_name
+wsdl = http://localhost/services/Assets?wsdl
+
+[DB]
+DBIP = db_ip_address
+DBTABLE = tablename
+User = db_user
+Password = db_pass
+
+[Credentials]
+User = IPWS_user
+Password = IPWS_password

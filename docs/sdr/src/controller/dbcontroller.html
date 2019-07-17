@@ -95,7 +95,12 @@ class Controller(object):
         self.session.add(report)
         self.session.commit()
 
-    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -&gt; None:
+    def saveFolders(
+        self,
+        productid: int,
+        pam_source_missing_count: int,
+        pam_destination_missing_count: int,
+    ) -&gt; None:
         &#34;&#34;&#34;Save tracking folders count to foldertracking table.
 
         Parameters
@@ -115,7 +120,7 @@ class Controller(object):
             &#34;settings_id&#34;: productid,
             &#34;pam_source_missing_count&#34;: pam_source_missing_count,
             &#34;pam_destination_missing_count&#34;: pam_destination_missing_count,
-            &#34;created_date&#34;: dt
+            &#34;created_date&#34;: dt,
         }
         tracking = FolderTracking(**data)
         self.session.add(tracking)
@@ -216,7 +221,12 @@ save report data to daily report db table.</p>
         self.session.add(report)
         self.session.commit()
 
-    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -&gt; None:
+    def saveFolders(
+        self,
+        productid: int,
+        pam_source_missing_count: int,
+        pam_destination_missing_count: int,
+    ) -&gt; None:
         &#34;&#34;&#34;Save tracking folders count to foldertracking table.
 
         Parameters
@@ -236,7 +246,7 @@ save report data to daily report db table.</p>
             &#34;settings_id&#34;: productid,
             &#34;pam_source_missing_count&#34;: pam_source_missing_count,
             &#34;pam_destination_missing_count&#34;: pam_destination_missing_count,
-            &#34;created_date&#34;: dt
+            &#34;created_date&#34;: dt,
         }
         tracking = FolderTracking(**data)
         self.session.add(tracking)
@@ -331,7 +341,12 @@ save report data to daily report db table.</p>
 </dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -&gt; None:
+<pre><code class="python">def saveFolders(
+    self,
+    productid: int,
+    pam_source_missing_count: int,
+    pam_destination_missing_count: int,
+) -&gt; None:
     &#34;&#34;&#34;Save tracking folders count to foldertracking table.
 
     Parameters
@@ -351,7 +366,7 @@ save report data to daily report db table.</p>
         &#34;settings_id&#34;: productid,
         &#34;pam_source_missing_count&#34;: pam_source_missing_count,
         &#34;pam_destination_missing_count&#34;: pam_destination_missing_count,
-        &#34;created_date&#34;: dt
+        &#34;created_date&#34;: dt,
     }
     tracking = FolderTracking(**data)
     self.session.add(tracking)

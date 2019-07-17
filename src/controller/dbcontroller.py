@@ -71,7 +71,12 @@ class Controller(object):
         self.session.add(report)
         self.session.commit()
 
-    def saveFolders(self, productid: int, pam_source_missing_count: int, pam_destination_missing_count: int) -> None:
+    def saveFolders(
+        self,
+        productid: int,
+        pam_source_missing_count: int,
+        pam_destination_missing_count: int,
+    ) -> None:
         """Save tracking folders count to foldertracking table.
 
         Parameters
@@ -91,9 +96,8 @@ class Controller(object):
             "settings_id": productid,
             "pam_source_missing_count": pam_source_missing_count,
             "pam_destination_missing_count": pam_destination_missing_count,
-            "created_date": dt
+            "created_date": dt,
         }
         tracking = FolderTracking(**data)
         self.session.add(tracking)
         self.session.commit()
-

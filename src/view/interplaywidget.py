@@ -163,4 +163,3 @@ class InterplayWidget(QTreeView):
                 [QStandardItem(value["name"]), QStandardItem(str(value["leaves"]))]
             )
             seen[dbid] = parent.child(parent.rowCount() - 1)
-

@@ -30,7 +30,7 @@ def test_listfolders(wsapi):
 
 @patch("src.service.wsapiservice.Client")
 def test_set_client(mock_zeep, wsapi):
-    wsapi.setClient("http://10.228.112.104/services/Assets?wsdl")
+    wsapi.setClient("http://localhost/services/Assets?wsdl")
     assert mock_zeep.call_count == 1
 
 
@@ -70,16 +70,15 @@ def test_list_folders(mock_wsapi, wsapi):
 @mark.skip
 def test_web_service_get_attributes():
     uri = "interplay://INTERPLAY-6/Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/INGEST/MATERIAL SR/04-2019"
-    api = WSApi("INTERPLAY-6", "ORFAOS DA TERRA", "administrator", "Renwfyt@1444")
-    api.setClient("http://10.228.112.104/services/Assets?wsdl")
+    api = WSApi("INTERPLAY-6", "ORFAOS DA TERRA", "ipws_user", "ipws_pass")
+    api.setClient("http://localhost/services/Assets?wsdl")
     result = api.webServiceGetAttributes(uri)
-    # print(result)
 
 @mark.skip
 def test_get_asset_modified_date():
     path = "Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA/INGEST/MATERIAL SR/04-2019"
-    api = WSApi("INTERPLAY-6", "ORFAOS DA TERRA", "administrator", "Renwfyt@1444")
-    api.setClient("http://10.228.112.104/services/Assets?wsdl")
+    api = WSApi("INTERPLAY-6", "ORFAOS DA TERRA", "ipws_user", "ipws_pass")
+    api.setClient("http://localhost/services/Assets?wsdl")
     result = api.getAssetDate(path)
     assert isinstance(result, datetime)
     assert str(result) == "2019-04-08 22:25:39.785000-03:00"

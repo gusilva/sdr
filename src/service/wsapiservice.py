@@ -113,14 +113,14 @@ class WSApi(FolderABS):
             API json response.
         """
         endpoint = {
-            "InterplayURI":  f"{self.interplay}/{path}",
+            "InterplayURI": f"{self.interplay}/{path}",
             "IncludeFolders": True,
             "IncludeFiles": True,
             "IncludeMOBs": True,
             "ReturnAttributes": {
                 "Attribute": [
                     {"Name": "Display Name", "Group": "USER"},
-                    {"Name": "Type", "Group": "SYSTEM"}
+                    {"Name": "Type", "Group": "SYSTEM"},
                 ]
             },
         }
@@ -143,14 +143,8 @@ class WSApi(FolderABS):
             API json response.
         """
         endpoint = {
-            "InterplayURIs": {
-                "InterplayURI": f"{self.interplay}/{path}",
-            },
-            "Attributes": {
-                "Attribute": [
-                    {"Name": "Modified Date", "Group": "SYSTEM"}
-                ]
-            },
+            "InterplayURIs": {"InterplayURI": f"{self.interplay}/{path}"},
+            "Attributes": {"Attribute": [{"Name": "Modified Date", "Group": "SYSTEM"}]},
         }
         client_response = self.client.service.GetAttributes(
             **endpoint, _soapheaders=[self.header_auth]
@@ -203,4 +197,4 @@ class WSApi(FolderABS):
         """
         result = self.webServiceGetAttributes(path)
         dt = result["AssetDescription"][0]["Attributes"]["Attribute"][-1]["_value_1"]
-        return datetime.strptime(dt, '%Y-%m-%dT%H:%M:%S.%f%z')
+        return datetime.strptime(dt, "%Y-%m-%dT%H:%M:%S.%f%z")

@@ -32,50 +32,8 @@ from pytest import fixture, raises, mark
 @fixture(scope=&#34;session&#34;)
 def cli():
     pass
-    # api = CliService(&#39;ws_usr&#39;, &#39;ws_pwd&#39;, &#39;127.0.0.1&#39;, &#39;sdr_table&#39;, &#39;db_usr_name&#39;, &#39;db_usr_pwd&#39;)
-    # assert isinstance(api, FolderABS)
-    # return api
-
 
 def test_init():
-    # settings = [
-    #     {
-    #         &#34;id&#34;: 1,
-    #         &#34;settings_name&#34;: &#34;DIAS FELIZES&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-13&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/DIAS FELIZES/GLOOBOX/EXTERNA&#34;,
-    #     },
-    #     {
-    #         &#34;id&#34;: 2,
-    #         &#34;settings_name&#34;: &#34;VERAO 90&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-6&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/VERAO 90/GLOOBOX/EXTERNA&#34;,
-    #     },
-    #     {
-    #         &#34;id&#34;: 3,
-    #         &#34;settings_name&#34;: &#34;ORFAOS DA TERRA&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-6&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA&#34;,
-    #     },
-    #     {
-    #         &#34;id&#34;: 4,
-    #         &#34;settings_name&#34;: &#34;MALHACAO&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-11&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/MALHACAO TFDA 2019/GLOOBOX/EXTERNA&#34;,
-    #     },
-    # ]
     pass
 
 
@@ -110,44 +68,6 @@ def cli():
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python">def test_init():
-    # settings = [
-    #     {
-    #         &#34;id&#34;: 1,
-    #         &#34;settings_name&#34;: &#34;DIAS FELIZES&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-13&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/DIAS FELIZES/GLOOBOX/EXTERNA&#34;,
-    #     },
-    #     {
-    #         &#34;id&#34;: 2,
-    #         &#34;settings_name&#34;: &#34;VERAO 90&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-6&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/VERAO 90/GLOOBOX/EXTERNA&#34;,
-    #     },
-    #     {
-    #         &#34;id&#34;: 3,
-    #         &#34;settings_name&#34;: &#34;ORFAOS DA TERRA&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-6&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/ORFAOS DA TERRA/GLOOBOX/EXTERNA&#34;,
-    #     },
-    #     {
-    #         &#34;id&#34;: 4,
-    #         &#34;settings_name&#34;: &#34;MALHACAO&#34;,
-    #         &#34;pam_source&#34;: &#34;INTERPLAY-11&#34;,
-    #         &#34;pam_destination&#34;: &#34;RJ2-JB-VIE&#34;,
-    #         &#34;wsdl_source&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;wsdl_destination&#34;: &#34;http://10.228.112.104/services/Assets?wsdl&#34;,
-    #         &#34;watch_folder&#34;: &#34;Projects/MALHACAO TFDA 2019/GLOOBOX/EXTERNA&#34;,
-    #     },
-    # ]
     pass</code></pre>
 </details>
 </dd>

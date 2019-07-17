@@ -45,9 +45,6 @@ from src.service.exceptions import WSApiException
 from src.view.interplaywidget import InterplayWidget
 
 
-
-
-
 class SyncWidget(QWidget):
     &#34;&#34;&#34;
     Sync ui with the interplay tree widgets.
@@ -317,7 +314,9 @@ class SyncWidget(QWidget):
             self.interplayTreeView.threadfinished = False
             self.sdrTreeView.threadfinished = False
 
-    def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -&gt; None:
+    def setColorNotOldThan(
+        self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget
+    ) -&gt; None:
         &#34;&#34;&#34;Set tree items color to items older than days.
 
         Parameters
@@ -337,7 +336,7 @@ class SyncWidget(QWidget):
         pam_obj : InterplayWidget
             interplay widget object.
 
-        &#34;&#34;&#34;        
+        &#34;&#34;&#34;
         t1 = datetime.now(timezone.utc)
         for i in dif:
             r = i.replace(mainfolder, &#34;&#34;)
@@ -350,17 +349,20 @@ class SyncWidget(QWidget):
     def getMissingFolders(self) -&gt; None:
         &#34;&#34;&#34;Get missing folders and set item colors.
 
-        &#34;&#34;&#34; 
+        &#34;&#34;&#34;
         pam_source_tree = self.interplayTreeView.walker.tree
         pam_destination_tree = self.sdrTreeView.walker.tree
-        dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
-        dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
-        watch_folder = self.watchFolderLineEdit.text().split(&#39;/&#39;)
+        dif = self.interplayTreeView.walker.compareTrees(
+            pam_source_tree, pam_destination_tree
+        )
+        dif_sdr = self.interplayTreeView.walker.compareTrees(
+            pam_destination_tree, pam_source_tree
+        )
+        watch_folder = self.watchFolderLineEdit.text().split(&#34;/&#34;)
         watch_folder.pop(-1)
-        watch_folder = &#39;/&#39;.join(watch_folder)
-        self.setColorNotOldThan(2, watch_folder, dif, &#39;red&#39;, self.interplayTreeView)
-        self.setColorNotOldThan(2, watch_folder, dif_sdr, &#39;yellow&#39;, self.sdrTreeView)
-
+        watch_folder = &#34;/&#34;.join(watch_folder)
+        self.setColorNotOldThan(2, watch_folder, dif, &#34;red&#34;, self.interplayTreeView)
+        self.setColorNotOldThan(2, watch_folder, dif_sdr, &#34;yellow&#34;, self.sdrTreeView)
 
 
 if __name__ == &#34;__main__&#34;:
@@ -702,7 +704,9 @@ enable the update button.</p>
             self.interplayTreeView.threadfinished = False
             self.sdrTreeView.threadfinished = False
 
-    def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -&gt; None:
+    def setColorNotOldThan(
+        self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget
+    ) -&gt; None:
         &#34;&#34;&#34;Set tree items color to items older than days.
 
         Parameters
@@ -722,7 +726,7 @@ enable the update button.</p>
         pam_obj : InterplayWidget
             interplay widget object.
 
-        &#34;&#34;&#34;        
+        &#34;&#34;&#34;
         t1 = datetime.now(timezone.utc)
         for i in dif:
             r = i.replace(mainfolder, &#34;&#34;)
@@ -735,16 +739,20 @@ enable the update button.</p>
     def getMissingFolders(self) -&gt; None:
         &#34;&#34;&#34;Get missing folders and set item colors.
 
-        &#34;&#34;&#34; 
+        &#34;&#34;&#34;
         pam_source_tree = self.interplayTreeView.walker.tree
         pam_destination_tree = self.sdrTreeView.walker.tree
-        dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
-        dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
-        watch_folder = self.watchFolderLineEdit.text().split(&#39;/&#39;)
+        dif = self.interplayTreeView.walker.compareTrees(
+            pam_source_tree, pam_destination_tree
+        )
+        dif_sdr = self.interplayTreeView.walker.compareTrees(
+            pam_destination_tree, pam_source_tree
+        )
+        watch_folder = self.watchFolderLineEdit.text().split(&#34;/&#34;)
         watch_folder.pop(-1)
-        watch_folder = &#39;/&#39;.join(watch_folder)
-        self.setColorNotOldThan(2, watch_folder, dif, &#39;red&#39;, self.interplayTreeView)
-        self.setColorNotOldThan(2, watch_folder, dif_sdr, &#39;yellow&#39;, self.sdrTreeView)</code></pre>
+        watch_folder = &#34;/&#34;.join(watch_folder)
+        self.setColorNotOldThan(2, watch_folder, dif, &#34;red&#34;, self.interplayTreeView)
+        self.setColorNotOldThan(2, watch_folder, dif_sdr, &#34;yellow&#34;, self.sdrTreeView)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -856,16 +864,20 @@ enable the update button.</p>
 <pre><code class="python">def getMissingFolders(self) -&gt; None:
     &#34;&#34;&#34;Get missing folders and set item colors.
 
-    &#34;&#34;&#34; 
+    &#34;&#34;&#34;
     pam_source_tree = self.interplayTreeView.walker.tree
     pam_destination_tree = self.sdrTreeView.walker.tree
-    dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
-    dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
-    watch_folder = self.watchFolderLineEdit.text().split(&#39;/&#39;)
+    dif = self.interplayTreeView.walker.compareTrees(
+        pam_source_tree, pam_destination_tree
+    )
+    dif_sdr = self.interplayTreeView.walker.compareTrees(
+        pam_destination_tree, pam_source_tree
+    )
+    watch_folder = self.watchFolderLineEdit.text().split(&#34;/&#34;)
     watch_folder.pop(-1)
-    watch_folder = &#39;/&#39;.join(watch_folder)
-    self.setColorNotOldThan(2, watch_folder, dif, &#39;red&#39;, self.interplayTreeView)
-    self.setColorNotOldThan(2, watch_folder, dif_sdr, &#39;yellow&#39;, self.sdrTreeView)</code></pre>
+    watch_folder = &#34;/&#34;.join(watch_folder)
+    self.setColorNotOldThan(2, watch_folder, dif, &#34;red&#34;, self.interplayTreeView)
+    self.setColorNotOldThan(2, watch_folder, dif_sdr, &#34;yellow&#34;, self.sdrTreeView)</code></pre>
 </details>
 </dd>
 <dt id="sdr.src.view.syncwidget.SyncWidget.onFinished"><code class="name flex">
@@ -967,7 +979,9 @@ enable the update button.</p>
 </dl></section>
 <details class="source">
 <summary>Source code</summary>
-<pre><code class="python">def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -&gt; None:
+<pre><code class="python">def setColorNotOldThan(
+    self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget
+) -&gt; None:
     &#34;&#34;&#34;Set tree items color to items older than days.
 
     Parameters
@@ -987,7 +1001,7 @@ enable the update button.</p>
     pam_obj : InterplayWidget
         interplay widget object.
 
-    &#34;&#34;&#34;        
+    &#34;&#34;&#34;
     t1 = datetime.now(timezone.utc)
     for i in dif:
         r = i.replace(mainfolder, &#34;&#34;)

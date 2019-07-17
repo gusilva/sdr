@@ -21,9 +21,6 @@ from src.service.exceptions import WSApiException
 from src.view.interplaywidget import InterplayWidget
 
 
-
-
-
 class SyncWidget(QWidget):
     """
     Sync ui with the interplay tree widgets.
@@ -293,7 +290,9 @@ class SyncWidget(QWidget):
             self.interplayTreeView.threadfinished = False
             self.sdrTreeView.threadfinished = False
 
-    def setColorNotOldThan(self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget) -> None:
+    def setColorNotOldThan(
+        self, days: int, mainfolder: str, dif: set, color: str, pam_obj: InterplayWidget
+    ) -> None:
         """Set tree items color to items older than days.
 
         Parameters
@@ -313,7 +312,7 @@ class SyncWidget(QWidget):
         pam_obj : InterplayWidget
             interplay widget object.
 
-        """        
+        """
         t1 = datetime.now(timezone.utc)
         for i in dif:
             r = i.replace(mainfolder, "")
@@ -326,17 +325,20 @@ class SyncWidget(QWidget):
     def getMissingFolders(self) -> None:
         """Get missing folders and set item colors.
 
-        """ 
+        """
         pam_source_tree = self.interplayTreeView.walker.tree
         pam_destination_tree = self.sdrTreeView.walker.tree
-        dif = self.interplayTreeView.walker.compareTrees(pam_source_tree, pam_destination_tree)
-        dif_sdr = self.interplayTreeView.walker.compareTrees(pam_destination_tree, pam_source_tree)
-        watch_folder = self.watchFolderLineEdit.text().split('/')
+        dif = self.interplayTreeView.walker.compareTrees(
+            pam_source_tree, pam_destination_tree
+        )
+        dif_sdr = self.interplayTreeView.walker.compareTrees(
+            pam_destination_tree, pam_source_tree
+        )
+        watch_folder = self.watchFolderLineEdit.text().split("/")
         watch_folder.pop(-1)
-        watch_folder = '/'.join(watch_folder)
-        self.setColorNotOldThan(2, watch_folder, dif, 'red', self.interplayTreeView)
-        self.setColorNotOldThan(2, watch_folder, dif_sdr, 'yellow', self.sdrTreeView)
-
+        watch_folder = "/".join(watch_folder)
+        self.setColorNotOldThan(2, watch_folder, dif, "red", self.interplayTreeView)
+        self.setColorNotOldThan(2, watch_folder, dif_sdr, "yellow", self.sdrTreeView)
 
 
 if __name__ == "__main__":

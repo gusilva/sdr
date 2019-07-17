@@ -28,6 +28,7 @@ import datetime
 
 Base = declarative_base()
 
+
 class Settings(Base):
     &#34;&#34;&#34;
     Product setting class for db table.
@@ -130,6 +131,7 @@ class Report(Base):
     pam_destination_count = Column(Integer)
     report_date = Column(DateTime(timezone=True), default=datetime.datetime.utcnow)
 
+
 class FolderTracking(Base):
     &#34;&#34;&#34;
     Tracking folders table.
@@ -155,6 +157,7 @@ class FolderTracking(Base):
         creation date.
     
     &#34;&#34;&#34;
+
     __tablename__ = &#34;foldertracking&#34;
     id = Column(Integer, primary_key=True)
     settings_id = Column(Integer, ForeignKey(&#34;settings.id&#34;))
@@ -226,6 +229,7 @@ for example, any mapped columns or relationships.</p></section>
         creation date.
     
     &#34;&#34;&#34;
+
     __tablename__ = &#34;foldertracking&#34;
     id = Column(Integer, primary_key=True)
     settings_id = Column(Integer, ForeignKey(&#34;settings.id&#34;))

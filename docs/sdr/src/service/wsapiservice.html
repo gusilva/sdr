@@ -137,14 +137,14 @@ class WSApi(FolderABS):
             API json response.
         &#34;&#34;&#34;
         endpoint = {
-            &#34;InterplayURI&#34;:  f&#34;{self.interplay}/{path}&#34;,
+            &#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;,
             &#34;IncludeFolders&#34;: True,
             &#34;IncludeFiles&#34;: True,
             &#34;IncludeMOBs&#34;: True,
             &#34;ReturnAttributes&#34;: {
                 &#34;Attribute&#34;: [
                     {&#34;Name&#34;: &#34;Display Name&#34;, &#34;Group&#34;: &#34;USER&#34;},
-                    {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}
+                    {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;},
                 ]
             },
         }
@@ -167,14 +167,8 @@ class WSApi(FolderABS):
             API json response.
         &#34;&#34;&#34;
         endpoint = {
-            &#34;InterplayURIs&#34;: {
-                &#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;,
-            },
-            &#34;Attributes&#34;: {
-                &#34;Attribute&#34;: [
-                    {&#34;Name&#34;: &#34;Modified Date&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}
-                ]
-            },
+            &#34;InterplayURIs&#34;: {&#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;},
+            &#34;Attributes&#34;: {&#34;Attribute&#34;: [{&#34;Name&#34;: &#34;Modified Date&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}]},
         }
         client_response = self.client.service.GetAttributes(
             **endpoint, _soapheaders=[self.header_auth]
@@ -227,7 +221,7 @@ class WSApi(FolderABS):
         &#34;&#34;&#34;
         result = self.webServiceGetAttributes(path)
         dt = result[&#34;AssetDescription&#34;][0][&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;]
-        return datetime.strptime(dt, &#39;%Y-%m-%dT%H:%M:%S.%f%z&#39;)</code></pre>
+        return datetime.strptime(dt, &#34;%Y-%m-%dT%H:%M:%S.%f%z&#34;)</code></pre>
 </details>
 </section>
 <section>
@@ -377,14 +371,14 @@ Get the asset modified date.</p>
             API json response.
         &#34;&#34;&#34;
         endpoint = {
-            &#34;InterplayURI&#34;:  f&#34;{self.interplay}/{path}&#34;,
+            &#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;,
             &#34;IncludeFolders&#34;: True,
             &#34;IncludeFiles&#34;: True,
             &#34;IncludeMOBs&#34;: True,
             &#34;ReturnAttributes&#34;: {
                 &#34;Attribute&#34;: [
                     {&#34;Name&#34;: &#34;Display Name&#34;, &#34;Group&#34;: &#34;USER&#34;},
-                    {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}
+                    {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;},
                 ]
             },
         }
@@ -407,14 +401,8 @@ Get the asset modified date.</p>
             API json response.
         &#34;&#34;&#34;
         endpoint = {
-            &#34;InterplayURIs&#34;: {
-                &#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;,
-            },
-            &#34;Attributes&#34;: {
-                &#34;Attribute&#34;: [
-                    {&#34;Name&#34;: &#34;Modified Date&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}
-                ]
-            },
+            &#34;InterplayURIs&#34;: {&#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;},
+            &#34;Attributes&#34;: {&#34;Attribute&#34;: [{&#34;Name&#34;: &#34;Modified Date&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}]},
         }
         client_response = self.client.service.GetAttributes(
             **endpoint, _soapheaders=[self.header_auth]
@@ -467,7 +455,7 @@ Get the asset modified date.</p>
         &#34;&#34;&#34;
         result = self.webServiceGetAttributes(path)
         dt = result[&#34;AssetDescription&#34;][0][&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;]
-        return datetime.strptime(dt, &#39;%Y-%m-%dT%H:%M:%S.%f%z&#39;)</code></pre>
+        return datetime.strptime(dt, &#34;%Y-%m-%dT%H:%M:%S.%f%z&#34;)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -509,7 +497,7 @@ Get the asset modified date.</p>
     &#34;&#34;&#34;
     result = self.webServiceGetAttributes(path)
     dt = result[&#34;AssetDescription&#34;][0][&#34;Attributes&#34;][&#34;Attribute&#34;][-1][&#34;_value_1&#34;]
-    return datetime.strptime(dt, &#39;%Y-%m-%dT%H:%M:%S.%f%z&#39;)</code></pre>
+    return datetime.strptime(dt, &#34;%Y-%m-%dT%H:%M:%S.%f%z&#34;)</code></pre>
 </details>
 </dd>
 <dt id="sdr.src.service.wsapiservice.WSApi.getCredentials"><code class="name flex">
@@ -678,14 +666,8 @@ Get the asset modified date.</p>
         API json response.
     &#34;&#34;&#34;
     endpoint = {
-        &#34;InterplayURIs&#34;: {
-            &#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;,
-        },
-        &#34;Attributes&#34;: {
-            &#34;Attribute&#34;: [
-                {&#34;Name&#34;: &#34;Modified Date&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}
-            ]
-        },
+        &#34;InterplayURIs&#34;: {&#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;},
+        &#34;Attributes&#34;: {&#34;Attribute&#34;: [{&#34;Name&#34;: &#34;Modified Date&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}]},
     }
     client_response = self.client.service.GetAttributes(
         **endpoint, _soapheaders=[self.header_auth]
@@ -724,14 +706,14 @@ Get the asset modified date.</p>
         API json response.
     &#34;&#34;&#34;
     endpoint = {
-        &#34;InterplayURI&#34;:  f&#34;{self.interplay}/{path}&#34;,
+        &#34;InterplayURI&#34;: f&#34;{self.interplay}/{path}&#34;,
         &#34;IncludeFolders&#34;: True,
         &#34;IncludeFiles&#34;: True,
         &#34;IncludeMOBs&#34;: True,
         &#34;ReturnAttributes&#34;: {
             &#34;Attribute&#34;: [
                 {&#34;Name&#34;: &#34;Display Name&#34;, &#34;Group&#34;: &#34;USER&#34;},
-                {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;}
+                {&#34;Name&#34;: &#34;Type&#34;, &#34;Group&#34;: &#34;SYSTEM&#34;},
             ]
         },
     }
